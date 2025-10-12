@@ -7,10 +7,6 @@ import { useInView } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
 import { Package } from '@/lib/types'
 
-export const metadata = {
-  title: 'Rental Packages',
-  description: 'Professional walkie talkie packages for every need. From small events to large productions.',
-}
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState<Package[]>([])
