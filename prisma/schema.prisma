@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Package {
+  id            String    @id @default(cuid())
+  name          String
+  description   String
+  dailyRate     Float
+  weeklyRate    Float
+  includes      String    // JSON array
+  bestFor       String    // JSON array
+  range         String
+  channels      Int
+  batteryLife   String
+  accessories   String    // JSON array
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  inventoryItems InventoryItem[]
+  bookings       Booking[]
+}
+
+model InventoryItem {
+  id          String   @id @default(cuid())
+  packageId   String
+  serialNumber String  @unique
+  status      String   @default("available") // available, rented, maintenance, retired
+  condition   String   @default("excellent") // excellent, good, fair, poor
+  lastServiced DateTime?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  package     Package  @relation(fields: [packageId], references: [id])
+  bookings    Booking[]
+}
+
+model Booking {
+  id              String    @id @default(cuid())
+  packageId       String
+  inventoryItemId String?
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  startDate       DateTime
+  endDate         DateTime
+  status          String    @default("pending") // pending, confirmed, active, completed, cancelled
+  totalCost       Float
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  package         Package   @relation(fields: [packageId], references: [id])
+  inventoryItem   InventoryItem? @relation(fields: [inventoryItemId], references: [id])
+}
