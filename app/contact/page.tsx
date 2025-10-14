@@ -1,258 +1,273 @@
-import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+'use client'
 
-export const metadata = {
-  title: 'Contact Us',
-  description: 'Get in touch with WalkieRentals for quotes and support. Available nationwide with 24/7 emergency assistance.',
+import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
 }
 
 export default function ContactPage() {
   return (
-    <div className="pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Contact Us
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Ready to rent? Have questions? Our team is here to help you find the perfect 
-            communication solution for your needs.
-          </p>
+    <div>
+      {/* Hero Section */}
+      <section className="relative pt-24 pb-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />
+          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />
+          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div className="bg-white border border-gray-200 rounded-xl p-8 shadow-soft">
-            <h2 className="text-2xl font-bold mb-6">Get a Quote</h2>
-            <form className="space-y-6" aria-label="Quote request form">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name <span className="text-red-500" aria-label="required">*</span>
-                  </label>
-                  <input 
-                    id="firstName"
-                    name="firstName"
-                    type="text" 
-                    required
-                    aria-required="true"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                    placeholder="John"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Last Name <span className="text-red-500" aria-label="required">*</span>
-                  </label>
-                  <input 
-                    id="lastName"
-                    name="lastName"
-                    type="text" 
-                    required
-                    aria-required="true"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                    placeholder="Smith"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email <span className="text-red-500" aria-label="required">*</span>
-                </label>
-                <input 
-                  id="email"
-                  name="email"
-                  type="email" 
-                  required
-                  aria-required="true"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                  placeholder="john@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone
-                </label>
-                <input 
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                  placeholder="(555) 123-4567"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="eventType" className="block text-sm font-medium text-gray-700 mb-2">
-                  Event Type
-                </label>
-                <select 
-                  id="eventType"
-                  name="eventType"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div 
+            className="text-center"
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+              Let's Talk About Your
+              <span className="gradient-text block">Production Needs</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              Whether you need same-day equipment or have questions about our services, 
+              our production communications experts are here to help.
+            </p>
+            
+            {/* Quick Stats */}
+            <motion.div 
+              className="flex flex-wrap justify-center gap-8 mt-8"
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+            >
+              {[
+                { icon: <Clock className="h-6 w-6" />, label: '2-Hour Response', text: 'Average' },
+                { icon: <Phone className="h-6 w-6" />, label: '24/7 Support', text: 'Always Available' },
+                { icon: <CheckCircle className="h-6 w-6" />, label: 'Expert Team', text: 'Production Pros' }
+              ].map((stat, index) => (
+                <motion.div 
+                  key={index}
+                  className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-soft"
+                  variants={fadeInUp}
                 >
-                  <option value="">Select event type</option>
-                  <option value="corporate">Corporate Event</option>
-                  <option value="wedding">Wedding</option>
-                  <option value="production">Film/TV Production</option>
-                  <option value="construction">Construction</option>
-                  <option value="outdoor">Outdoor Event</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
+                  <div className="text-primary">
+                    {stat.icon}
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-gray-900">{stat.label}</div>
+                    <div className="text-sm text-gray-600">{stat.text}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
-                    Start Date
-                  </label>
-                  <input 
-                    id="startDate"
-                    name="startDate"
-                    type="date"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-2">
-                    End Date
-                  </label>
-                  <input 
-                    id="endDate"
-                    name="endDate"
-                    type="date"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-2">
-                  Number of Radios Needed
-                </label>
-                <select 
-                  id="quantity"
-                  name="quantity"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                >
-                  <option value="">Select quantity</option>
-                  <option value="2-5">2-5 radios</option>
-                  <option value="6-10">6-10 radios</option>
-                  <option value="11-20">11-20 radios</option>
-                  <option value="21-50">21-50 radios</option>
-                  <option value="50+">50+ radios</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
-                </label>
-                <textarea 
-                  id="message"
-                  name="message"
-                  rows={4}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-colors"
-                  placeholder="Tell us about your event and any specific requirements..."
-                  aria-describedby="messageHelp"
-                ></textarea>
-                <p id="messageHelp" className="sr-only">
-                  Provide details about your event, timeline, and any special requirements
-                </p>
-              </div>
-
-              <button 
-                type="submit"
-                className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-4 rounded-lg transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                aria-label="Submit quote request"
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Main Contact Section */}
+        <section className="py-16">
+          <motion.div 
+            className="max-w-4xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            {/* Quick Contact Cards */}
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+              variants={fadeInUp}
+            >
+              <a 
+                href="tel:5551234567"
+                className="group bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-8 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
               >
-                Send Quote Request
-              </button>
-            </form>
-          </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Phone className="h-6 w-6" />
+                      <span className="text-sm font-medium opacity-90">Call Us Now</span>
+                    </div>
+                    <div className="text-2xl font-bold">(555) 123-4567</div>
+                    <div className="text-sm opacity-90 mt-1">Mon-Fri, 8am-6pm EST</div>
+                  </div>
+                  <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </a>
 
-          {/* Contact Info */}
-          <div className="space-y-8">
-            {/* Contact Details */}
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-xl p-8 shadow-soft">
-              <h3 className="text-xl font-bold mb-6">Get in Touch</h3>
-              <div className="space-y-4">
-                <div className="flex items-center group">
-                  <Phone className="h-5 w-5 text-primary mr-4 flex-shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true" />
+              <a 
+                href="mailto:info@walkierentals.com"
+                className="group bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-8 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+              >
+                <div className="flex items-center justify-between">
                   <div>
-                    <a href="tel:5551234567" className="font-medium hover:text-primary transition-colors">(555) 123-4567</a>
-                    <div className="text-sm text-gray-600">Monday - Friday, 8am - 6pm EST</div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Mail className="h-6 w-6" />
+                      <span className="text-sm font-medium opacity-90">Email Us</span>
+                    </div>
+                    <div className="text-xl font-bold">info@walkierentals.com</div>
+                    <div className="text-sm opacity-90 mt-1">2-hour response time</div>
                   </div>
+                  <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
                 </div>
-                
-                <div className="flex items-center group">
-                  <Mail className="h-5 w-5 text-primary mr-4 flex-shrink-0 group-hover:scale-110 transition-transform" aria-hidden="true" />
+              </a>
+            </motion.div>
+
+            {/* Additional Contact Info */}
+            <motion.div 
+              className="bg-white border border-gray-200 rounded-xl p-8"
+              variants={fadeInUp}
+            >
+              <h3 className="font-bold text-gray-900 mb-6 text-xl">Other Ways to Reach Us</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <div>
-                    <a href="mailto:info@walkierentals.com" className="font-medium hover:text-primary transition-colors">info@walkierentals.com</a>
-                    <div className="text-sm text-gray-600">We respond within 2 hours</div>
-                  </div>
-                </div>
-                
-                <div className="flex items-center">
-                  <MapPin className="h-5 w-5 text-primary mr-4 flex-shrink-0" aria-hidden="true" />
-                  <div>
-                    <div className="font-medium">Nationwide Shipping</div>
+                    <div className="font-medium text-gray-900">Nationwide Shipping</div>
                     <div className="text-sm text-gray-600">Continental United States</div>
                   </div>
                 </div>
-
-                <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-primary mr-4 flex-shrink-0" aria-hidden="true" />
+                
+                <div className="flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-medium">24/7 Support</div>
-                    <div className="text-sm text-gray-600">Emergency support during rentals</div>
+                    <div className="font-medium text-gray-900">Business Hours</div>
+                    <div className="text-sm text-gray-600">Mon-Fri: 8am-6pm EST</div>
+                    <div className="text-sm text-gray-600">Sat: 9am-3pm EST</div>
+                    <div className="text-sm text-gray-600">Sun: Closed</div>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
+          </motion.div>
+        </section>
 
-            {/* Business Hours */}
-            <div className="bg-white border border-gray-200 rounded-xl p-8">
-              <h3 className="text-xl font-bold mb-6">Business Hours</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Monday - Friday</span>
-                  <span className="font-medium">8:00 AM - 6:00 PM EST</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Saturday</span>
-                  <span className="font-medium">9:00 AM - 3:00 PM EST</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Sunday</span>
-                  <span className="font-medium">Closed</span>
-                </div>
-              </div>
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  <strong>Emergency Support:</strong> 24/7 technical support is available 
-                  for active rentals at no additional cost.
-                </p>
-              </div>
-            </div>
-
-            {/* FAQ Link */}
-            <div className="bg-white border border-gray-200 rounded-xl p-8">
-              <h3 className="text-xl font-bold mb-4">Have Questions?</h3>
-              <p className="text-gray-600 mb-4">
-                Check out our frequently asked questions for quick answers to common inquiries.
+        {/* FAQ Section */}
+        <section className="py-16 border-t border-gray-200">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Quick answers to common questions about our production communication rentals
               </p>
-              <a 
-                href="#faq" 
-                className="inline-flex items-center text-primary hover:text-primary-hover font-medium"
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
+            {[
+              {
+                question: "Is the equipment really ready to use out of the box?",
+                answer: "Absolutely! Our turnkey solution means every radio arrives fully charged, pre-programmed to your specifications, and tested. Simply unpack and you're ready to communicate."
+              },
+              {
+                question: "What's included in the turnkey package?",
+                answer: "Everything you need: pre-programmed radios, charged batteries, earpieces, carrying cases, and prepaid return shipping. No setup, no hassle - just open and use."
+              },
+              {
+                question: "How does the turnkey delivery process work?",
+                answer: "Order online or by phone, we program and ship same-day (orders before 2pm EST). Equipment arrives production-ready. After your shoot, use the included prepaid label to return - completely hassle-free."
+              },
+              {
+                question: "What if I have technical issues during my rental?",
+                answer: "Our 24/7 turnkey support includes instant troubleshooting, equipment replacement if needed, and rental extensions. You focus on production, we handle the rest."
+              }
+            ].map((faq, index) => (
+              <motion.div 
+                key={index}
+                className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-6 border border-gray-100 hover:shadow-soft transition-all duration-300"
+                variants={fadeInUp}
               >
-                View FAQ
+                <h3 className="font-semibold text-gray-900 mb-3">{faq.question}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div 
+            className="text-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <p className="text-gray-600 mb-6">
+              Have more questions? We're here to help!
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="tel:5551234567"
+                className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
+              >
+                <Phone className="mr-2 h-5 w-5" />
+                Call Us Now
+              </a>
+              <a 
+                href="mailto:info@walkierentals.com"
+                className="inline-flex items-center justify-center border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300"
+              >
+                <Mail className="mr-2 h-5 w-5" />
+                Email Support
               </a>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </section>
+
+        {/* Final CTA Section */}
+        <section className="py-16">
+          <motion.div 
+            className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-12 text-white text-center overflow-hidden shadow-soft-lg"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Ready to Equip Your Production?
+              </h2>
+              <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                Get broadcast-quality communication equipment delivered fast. Same-day shipping available.
+              </p>
+              <a 
+                href="/packages"
+                className="inline-flex items-center bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
+              >
+                View Production Packages
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </a>
+            </div>
+          </motion.div>
+        </section>
       </div>
     </div>
   )

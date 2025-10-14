@@ -2,22 +2,41 @@
 
 import Link from 'next/link'
 import Hero from '@/components/Hero'
-import { Truck, Shield, Clock, Phone, ArrowRight } from 'lucide-react'
+import { Truck, Shield, Clock, Phone, ArrowRight, ShoppingCart } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { Package } from '@/lib/types'
+import { useQuote } from '@/contexts/QuoteContext'
+
+// Simplified animation variants for better performance
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
 
 export default function Home() {
   const [packages, setPackages] = useState<Package[]>([])
   const [loading, setLoading] = useState(true)
+  const { addToQuote } = useQuote()
 
   useEffect(() => {
     async function fetchPackages() {
       try {
-        const res = await fetch('/api/packages')
+        const res = await fetch('/api/packages', {
+          next: { revalidate: 60 }
+        })
         const data = await res.json()
-        setPackages(data.slice(0, 3)) // Get first 3 for popular packages
+        setPackages(data.slice(0, 3))
       } catch (error) {
         console.error('Error fetching packages:', error)
       } finally {
@@ -27,14 +46,14 @@ export default function Home() {
     fetchPackages()
   }, [])
 
-  // Structured data for organization
-  const organizationSchema = {
+  // Memoize structured data to prevent recalculation
+  const organizationSchema = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "WalkieRentals",
     "url": "https://walkierentals.com",
     "logo": "https://walkierentals.com/logo.png",
-    "description": "Professional walkie talkie rentals for events, productions, and communication needs",
+    "description": "Professional production communication equipment rental for film, TV, and live event productions. Broadcast-grade Motorola MOTOTRBO radios with 24/7 on-set technical support.",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+1-555-123-4567",
@@ -47,10 +66,10 @@ export default function Home() {
       "addressCountry": "US"
     },
     "sameAs": []
-  }
+  }), [])
 
-  // Structured data for products
-  const productsSchema = {
+  // Memoize products schema - only recalculate when packages change
+  const productsSchema = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "ItemList",
     "itemListElement": packages.map((pkg, index) => ({
@@ -73,18 +92,7 @@ export default function Home() {
         }
       }
     }))
-  }
-  const howItWorksRef = useRef(null)
-  const packagesRef = useRef(null)
-  const featuresRef = useRef(null)
-  const faqRef = useRef(null)
-  const ctaRef = useRef(null)
-  
-  const howItWorksInView = useInView(howItWorksRef, { once: true, margin: "-100px" })
-  const packagesInView = useInView(packagesRef, { once: true, margin: "-100px" })
-  const featuresInView = useInView(featuresRef, { once: true, margin: "-100px" })
-  const faqInView = useInView(faqRef, { once: true, margin: "-100px" })
-  const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" })
+  }), [packages])
 
   return (
     <>
@@ -104,52 +112,55 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* How it Works Section */}
-        <section ref={howItWorksRef} className="py-16 border-t border-gray-200">
+        <section className="py-16 border-t border-gray-200">
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={howItWorksInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
           >
             How it works
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
             {[
               {
                 step: 1,
-                title: "CHOOSE PACKAGE",
-                description: "Browse our packages and select the perfect communication solution for your needs."
+                title: "SELECT PACKAGE",
+                description: "Choose production-ready comms packages tailored for film, TV, and live events."
               },
               {
                 step: 2,
-                title: "RESERVE & SHIP",
-                description: "Reserve your dates and we'll ship your equipment to arrive when you need it."
+                title: "SCHEDULE DELIVERY",
+                description: "We ship pre-programmed equipment to your location or set. Same-day available."
               },
               {
                 step: 3,
-                title: "COMMUNICATE",
-                description: "Use professional-grade equipment for clear, reliable communication during your event."
+                title: "PRODUCTION DAY",
+                description: "Crystal-clear communication with 24/7 technical support throughout your shoot."
               },
               {
                 step: 4,
-                title: "RETURN",
-                description: "Send equipment back using the included prepaid return shipping label."
+                title: "EASY RETURN",
+                description: "Wrap and return using the included prepaid shipping label. No hassle."
               }
-            ].map((step, index) => (
+            ].map((step) => (
               <motion.div 
                 key={step.step} 
-                className="text-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={howItWorksInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center group"
+                variants={fadeInUp}
+                transition={{ duration: 0.4 }}
               >
-                <motion.div 
-                  className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-blue-600 text-white font-bold text-xl rounded-full mx-auto mb-4 shadow-lg"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-blue-600 text-white font-bold text-xl rounded-full mx-auto mb-4 shadow-lg transition-transform duration-300 group-hover:scale-110">
                   {step.step}
-                </motion.div>
+                </div>
                 <h3 className="font-semibold text-sm uppercase tracking-wide mb-2 text-gray-900">
                   {step.title}
                 </h3>
@@ -158,28 +169,36 @@ export default function Home() {
                 </p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* Popular Packages Section */}
-        <section ref={packagesRef} className="py-16">
+        <section className="py-16">
           <motion.div 
             className="flex items-center justify-between mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={packagesInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl font-bold">Popular packages</h2>
+            <h2 className="text-3xl font-bold">Production Packages</h2>
             <Link 
               href="/packages" 
               className="inline-flex items-center text-primary hover:text-primary-hover transition-colors group"
             >
-              View all packages
+              View all production packages
               <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
             {loading ? (
               // Loading skeleton
               [1, 2, 3].map((i) => (
@@ -191,14 +210,12 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              packages.map((pkg, index) => (
+              packages.map((pkg) => (
               <motion.div 
                 key={pkg.id} 
-                className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-soft-lg"
-                initial={{ opacity: 0, y: 20 }}
-                animate={packagesInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -8, scale: 1.02 }}
+                className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-soft-lg will-change-transform"
+                variants={fadeInUp}
+                transition={{ duration: 0.4 }}
               >
                 <div className="mb-4">
                   <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{pkg.name}</h3>
@@ -240,182 +257,167 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <Link 
-                  href={`/packages/${pkg.id}`}
-                  className="w-full bg-primary hover:bg-primary-hover text-white text-center py-3 rounded-lg transition-all duration-300 font-medium block group-hover:shadow-lg"
-                >
-                  View Details
-                </Link>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => addToQuote(pkg)}
+                        className="flex-1 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white text-center py-3 rounded-lg transition-all duration-300 font-medium flex items-center justify-center gap-2 group/btn"
+                        aria-label={`Add ${pkg.name} to quote`}
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span className="hidden sm:inline">Add to Quote</span>
+                        <span className="sm:hidden">Quote</span>
+                      </button>
+                      <Link
+                        href={`/packages/${pkg.id}`}
+                        className="flex-1 bg-primary hover:bg-primary-hover text-white text-center py-3 rounded-lg transition-all duration-300 font-medium block"
+                      >
+                        Details
+                      </Link>
+                    </div>
               </motion.div>
             ))
             )}
-          </div>
+          </motion.div>
         </section>
 
         {/* Features Section */}
-        <section ref={featuresRef} className="py-16 border-t border-gray-200">
+        <section className="py-16 border-t border-gray-200">
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={featuresInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
           >
-            Why choose WalkieRentals?
+            Why Production Teams Trust Us
           </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
             {[
               {
                 icon: <Truck className="h-8 w-8" />,
-                title: "Nationwide Shipping",
-                description: "Fast, reliable shipping to anywhere in the continental US with prepaid return labels."
+                title: "Fast Delivery",
+                description: "Same-day shipping available. Equipment arrives production-ready and pre-programmed to your specs."
               },
               {
                 icon: <Shield className="h-8 w-8" />,
-                title: "Professional Grade",
-                description: "Commercial-quality equipment tested and maintained to ensure peak performance."
+                title: "Broadcast Quality",
+                description: "Motorola MOTOTRBO digital radios with noise cancellation for crystal-clear on-set communication."
               },
               {
                 icon: <Clock className="h-8 w-8" />,
-                title: "Flexible Rentals",
-                description: "Daily, weekly, and monthly rental options to fit your project timeline."
+                title: "Flexible Periods",
+                description: "Daily, weekly, and monthly rentals. Easy extensions if your production runs long."
               },
               {
                 icon: <Phone className="h-8 w-8" />,
-                title: "Expert Support",
-                description: "24/7 customer support and technical assistance from communication professionals."
+                title: "24/7 Tech Support",
+                description: "Real production professionals on call around the clock. We understand set life."
               }
             ].map((feature, index) => (
               <motion.div 
                 key={index} 
                 className="text-center group"
-                initial={{ opacity: 0, y: 20 }}
-                animate={featuresInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
+                variants={fadeInUp}
+                transition={{ duration: 0.4 }}
               >
-                <motion.div 
-                  className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 text-primary rounded-full mx-auto mb-4 group-hover:shadow-lg transition-shadow"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 text-primary rounded-full mx-auto mb-4 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">
                   {feature.icon}
-                </motion.div>
+                </div>
                 <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
                 <p className="text-sm text-gray-600">{feature.description}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* FAQ Section */}
-        <section ref={faqRef} className="py-16 border-t border-gray-200">
+        <section className="py-16 border-t border-gray-200">
           <motion.h2 
             className="text-3xl font-bold text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={faqInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
           >
             Frequently Asked Questions
           </motion.h2>
-          <div className="max-w-3xl mx-auto space-y-6">
+          <motion.div 
+            className="max-w-3xl mx-auto space-y-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+          >
             {[
               {
-                question: "How far in advance should I book?",
-                answer: "We recommend booking at least 1-2 weeks in advance to guarantee availability, especially during peak event seasons."
+                question: "Do you offer same-day delivery for last-minute productions?",
+                answer: "Yes! We offer same-day shipping on orders placed before 2pm EST. Equipment arrives pre-programmed and production-ready."
               },
               {
-                question: "Do you ship nationwide?",
-                answer: "Yes, we ship across the continental United States with reliable shipping partners and include prepaid return labels."
+                question: "Are the radios pre-programmed for our production?",
+                answer: "Absolutely. We pre-program all radios to your channel specifications and test them before shipping. They work out of the box."
               },
               {
-                question: "What happens if equipment is damaged?",
-                answer: "Contact us immediately if equipment is damaged. We'll assess the situation and guide you through next steps based on our damage policy."
+                question: "What if we need to extend during a long shoot?",
+                answer: "No problem. Contact our 24/7 support line and we'll extend your rental immediately. We understand production schedules change."
               },
               {
-                question: "Can I extend my rental period?",
-                answer: "Extensions are possible subject to availability. Contact us as early as possible to arrange an extension."
+                question: "Do you provide technical support during production?",
+                answer: "Yes. Our team of production communications experts is available 24/7 via phone. We've worked on hundreds of sets and know the challenges."
               }
             ].map((faq, index) => (
               <motion.div 
                 key={index} 
-                className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg p-6 hover:shadow-soft transition-all duration-300 border border-gray-100"
-                initial={{ opacity: 0, y: 20 }}
-                animate={faqInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.02 }}
+                className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg p-6 hover:shadow-soft transition-shadow duration-300 border border-gray-100"
+                variants={fadeInUp}
+                transition={{ duration: 0.4 }}
               >
                 <h3 className="font-semibold mb-3">{faq.question}</h3>
                 <p className="text-gray-600">{faq.answer}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* CTA Section */}
-        <section ref={ctaRef} className="py-16 border-t border-gray-200">
+        <section className="py-16 border-t border-gray-200">
           <motion.div 
             className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white text-center overflow-hidden shadow-soft-lg"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={ctaInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeInUp}
+            transition={{ duration: 0.5 }}
           >
-            {/* Animated background elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <motion.div 
-                className="absolute -top-10 -left-10 w-40 h-40 bg-white rounded-full mix-blend-soft-light opacity-10"
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  x: [0, 30, 0],
-                  y: [0, 20, 0],
-                }}
-                transition={{ duration: 8, repeat: Infinity }}
-              />
-              <motion.div 
-                className="absolute -bottom-10 -right-10 w-40 h-40 bg-white rounded-full mix-blend-soft-light opacity-10"
-                animate={{ 
-                  scale: [1, 1.3, 1],
-                  x: [0, -30, 0],
-                  y: [0, -20, 0],
-                }}
-                transition={{ duration: 10, repeat: Infinity }}
-              />
-            </div>
-            
             <div className="relative z-10">
-              <motion.h2 
-                className="text-3xl font-bold mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={ctaInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                Ready to get started?
-              </motion.h2>
-              <motion.p 
-                className="text-xl opacity-90 mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                animate={ctaInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                Browse our packages or contact us for a custom quote tailored to your needs.
-              </motion.p>
-              <motion.div 
-                className="flex flex-col sm:flex-row gap-4 justify-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={ctaInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
+              <h2 className="text-3xl font-bold mb-4">
+                Ready for your next production?
+              </h2>
+              <p className="text-xl opacity-90 mb-8">
+                Get production-ready comms delivered fast. Same-day shipping available for urgent shoots.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/packages"
                   className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
                 >
-                  Browse Packages
+                  View Production Packages
                 </Link>
                 <Link 
                   href="/contact"
                   className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl"
                 >
-                  Get Custom Quote
+                  Request Production Quote
                 </Link>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
         </section>

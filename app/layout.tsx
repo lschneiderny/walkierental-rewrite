@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { QuoteProvider } from '@/contexts/QuoteContext'
+import QuoteButton from '@/components/QuoteButton'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -13,11 +15,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://walkierentals.com'),
   title: {
-    default: 'WalkieRentals - Professional Walkie Talkie Rentals',
+    default: 'WalkieRentals - Production Communication Equipment Rental',
     template: '%s | WalkieRentals'
   },
-  description: 'Professional walkie talkie rentals for events, productions, and communication needs. Nationwide shipping, 24/7 support, and flexible rental periods.',
-  keywords: ['walkie talkie rental', 'two-way radio rental', 'event communication', 'radio rental', 'production radios', 'construction communication'],
+  description: 'Professional production comms rental for film, TV, and live events. Broadcast-grade Motorola MOTOTRBO radios with 24/7 on-set support. Same-day shipping available.',
+  keywords: ['production comms rental', 'film production radios', 'TV production communication', 'event comms rental', 'Motorola MOTOTRBO rental', 'production walkie talkies', 'on-set communication'],
   authors: [{ name: 'WalkieRentals' }],
   creator: 'WalkieRentals',
   publisher: 'WalkieRentals',
@@ -31,8 +33,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://walkierentals.com',
     siteName: 'WalkieRentals',
-    title: 'WalkieRentals - Professional Walkie Talkie Rentals',
-    description: 'Professional walkie talkie rentals for events, productions, and communication needs. Nationwide shipping, 24/7 support, and flexible rental periods.',
+    title: 'WalkieRentals - Production Communication Equipment Rental',
+    description: 'Professional production comms rental for film, TV, and live events. Broadcast-grade Motorola radios with 24/7 on-set support and same-day shipping.',
     images: [
       {
         url: '/og-image.jpg',
@@ -44,8 +46,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'WalkieRentals - Professional Walkie Talkie Rentals',
-    description: 'Professional walkie talkie rentals for events, productions, and communication needs.',
+    title: 'WalkieRentals - Production Communication Equipment Rental',
+    description: 'Professional production comms rental for film, TV, and live events. Broadcast-grade Motorola radios with 24/7 support.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -69,12 +71,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased font-sans">
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg">
-          Skip to main content
-        </a>
-        <Header />
-        <main id="main-content" className="min-h-screen">{children}</main>
-        <Footer />
+        <QuoteProvider>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg">
+            Skip to main content
+          </a>
+          <Header />
+          <main id="main-content" className="min-h-screen">{children}</main>
+          <Footer />
+          <QuoteButton />
+        </QuoteProvider>
       </body>
     </html>
   )

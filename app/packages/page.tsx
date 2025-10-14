@@ -1,29 +1,40 @@
-'use client'
+"use client";
 
 import Link from 'next/link'
-import { Radio, Signal, Battery, Users } from 'lucide-react'
+import { Radio, Signal, Battery, Users, ShoppingCart } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Package } from '@/lib/types'
+import { useQuote } from '@/contexts/QuoteContext'
 
+// Simplified animation variants for better performance
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0
+    }
+  }
+}
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState<Package[]>([])
   const [loading, setLoading] = useState(true)
-
-  const headerRef = useRef(null)
-  const packagesRef = useRef(null)
-  const ctaRef = useRef(null)
-  
-  const headerInView = useInView(headerRef, { once: true })
-  const packagesInView = useInView(packagesRef, { once: true, margin: "-100px" })
-  const ctaInView = useInView(ctaRef, { once: true, margin: "-100px" })
+  const { addToQuote } = useQuote()
 
   useEffect(() => {
     async function fetchPackages() {
       try {
-        const res = await fetch('/api/packages')
+        const res = await fetch('/api/packages', {
+          next: { revalidate: 60 }
+        })
         const data = await res.json()
         setPackages(data)
       } catch (error) {
@@ -35,8 +46,8 @@ export default function PackagesPage() {
     fetchPackages()
   }, [])
   
-  // Structured data for all packages
-  const packagesSchema = {
+  // Memoize structured data - only recalculate when packages change
+  const packagesSchema = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "ItemList",
     "itemListElement": packages.map((pkg, index) => ({
@@ -72,7 +83,7 @@ export default function PackagesPage() {
         }
       }
     }))
-  }
+  }), [packages])
   
   return (
     <>
@@ -85,18 +96,18 @@ export default function PackagesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div 
-          ref={headerRef}
           className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={headerInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          transition={{ duration: 0.3 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Rental Packages
+            Production Communication Packages
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Professional walkie talkie packages for every need. From small events to large productions, 
-            we have the right communication solution for you.
+            Broadcast-quality communication systems for film, TV, and live event productions. 
+            All packages include pre-programming, same-day shipping, and 24/7 on-set support.
           </p>
         </motion.div>
 
@@ -116,7 +127,12 @@ export default function PackagesPage() {
         </div>
 
         {/* Packages Grid */}
-        <div ref={packagesRef} className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16"
+          initial="hidden"
+          animate={loading ? "hidden" : "visible"}
+          variants={staggerContainer}
+        >
           {loading ? (
             // Loading skeleton
             [1, 2, 3, 4, 5, 6].map((i) => (
@@ -128,20 +144,18 @@ export default function PackagesPage() {
               </div>
             ))
           ) : (
-            packages.map((pkg, index) => (
+            packages.map((pkg) => (
             <motion.div 
               key={pkg.id} 
-              className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-soft-lg transition-all duration-300"
-              initial={{ opacity: 0, y: 20 }}
-              animate={packagesInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
+              className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-200 hover-lift-fast transform-gpu"
+              variants={fadeInUp}
+              transition={{ duration: 0.3 }}
             >
               {/* Package Header */}
               <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-white to-blue-50/20">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{pkg.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors duration-200">{pkg.name}</h3>
                     <p className="text-gray-600 mb-4">{pkg.description}</p>
                   </div>
                   <div className="text-right">
@@ -207,31 +221,42 @@ export default function PackagesPage() {
                 </div>
               </div>
 
-              {/* Package Footer */}
-              <div className="px-6 pb-6">
-                <Link 
-                  href={`/packages/${pkg.id}`}
-                  className="w-full bg-primary hover:bg-primary-hover text-white text-center py-3 rounded-lg transition-all duration-300 font-semibold block group-hover:shadow-lg"
-                >
-                  View Details & Book
-                </Link>
-              </div>
+                  {/* Package Footer */}
+                  <div className="px-6 pb-6">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => addToQuote(pkg)}
+                        className="flex-1 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white text-center py-3 rounded-lg transition-all duration-200 font-semibold flex items-center justify-center gap-2"
+                        aria-label={`Add ${pkg.name} to quote`}
+                      >
+                        <ShoppingCart className="h-5 w-5" />
+                        Add to Quote
+                      </button>
+                      <Link
+                        href={`/packages/${pkg.id}`}
+                        className="flex-1 bg-primary hover:bg-primary-hover text-white text-center py-3 rounded-lg transition-colors duration-200 font-semibold flex items-center justify-center"
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
             </motion.div>
           ))
           )}
-        </div>
+        </motion.div>
 
         {/* Bottom CTA */}
         <motion.div 
-          ref={ctaRef}
           className="text-center py-16 border-t border-gray-200"
-          initial={{ opacity: 0, y: 20 }}
-          animate={ctaInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUp}
+          transition={{ duration: 0.3 }}
         >
-          <h2 className="text-2xl font-bold mb-4">Need a custom solution?</h2>
+          <h2 className="text-2xl font-bold mb-4">Need a custom production package?</h2>
           <p className="text-gray-600 mb-6">
-            Can't find the perfect package? We'll create a custom rental solution for your specific needs.
+            Large crew or unique production requirements? We'll create a custom comms package tailored to your shoot.
           </p>
           <Link 
             href="/contact"

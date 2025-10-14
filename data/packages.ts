@@ -16,27 +16,30 @@ export interface Package {
 
 export const packages: Package[] = [
   {
-    id: "basic-starter",
-    name: "Basic Starter Package",
-    description: "Perfect for small events and casual use. Reliable communication for up to 2 miles.",
-    dailyRate: 15,
-    weeklyRate: 75,
+    id: "production-pro",
+    name: "Production Pro Package",
+    description: "High-end digital radios with noise cancellation and crystal-clear audio for professional productions.",
+    dailyRate: 65,
+    weeklyRate: 390,
     includes: [
-      "2 Motorola T100 Walkie Talkies",
-      "Belt clips",
-      "User manual",
-      "Carrying case"
+      "6 Motorola MOTOTRBO DP4400e Radios",
+      "Noise-cancelling headsets",
+      "Multi-unit chargers",
+      "Spare batteries",
+      "Custom programming",
+      "Belt clips and cases"
     ],
     bestFor: [
-      "Small events (up to 20 people)",
-      "Outdoor activities",
-      "Basic coordination needs"
+      "Film and TV productions",
+      "Large corporate events",
+      "Concert and festival staff",
+      "Emergency response teams"
     ],
     specifications: {
-      range: "Up to 2 miles",
-      channels: 22,
-      batteryLife: "18 hours",
-      accessories: ["Belt clips", "Carrying case"]
+      range: "Up to 8 miles",
+      channels: 32,
+      batteryLife: "16+ hours",
+      accessories: ["Noise-cancelling headsets", "Multi chargers", "Spare batteries"]
     }
   },
   {
@@ -66,30 +69,27 @@ export const packages: Package[] = [
     }
   },
   {
-    id: "production-pro",
-    name: "Production Pro Package",
-    description: "High-end digital radios with noise cancellation and crystal-clear audio for professional productions.",
-    dailyRate: 65,
-    weeklyRate: 390,
+    id: "basic-starter",
+    name: "Basic Starter Package",
+    description: "Perfect for small events and casual use. Reliable communication for up to 2 miles.",
+    dailyRate: 15,
+    weeklyRate: 75,
     includes: [
-      "6 Motorola MOTOTRBO DP4400e Radios",
-      "Noise-cancelling headsets",
-      "Multi-unit chargers",
-      "Spare batteries",
-      "Custom programming",
-      "Belt clips and cases"
+      "2 Motorola T100 Walkie Talkies",
+      "Belt clips",
+      "User manual",
+      "Carrying case"
     ],
     bestFor: [
-      "Film and TV productions",
-      "Large corporate events",
-      "Concert and festival staff",
-      "Emergency response teams"
+      "Small events (up to 20 people)",
+      "Outdoor activities",
+      "Basic coordination needs"
     ],
     specifications: {
-      range: "Up to 8 miles",
-      channels: 32,
-      batteryLife: "16+ hours",
-      accessories: ["Noise-cancelling headsets", "Multi chargers", "Spare batteries"]
+      range: "Up to 2 miles",
+      channels: 22,
+      batteryLife: "18 hours",
+      accessories: ["Belt clips", "Carrying case"]
     }
   },
   {

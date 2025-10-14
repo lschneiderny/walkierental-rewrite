@@ -1,68 +1,170 @@
 import Link from 'next/link'
-import { Radio, Phone, Mail } from 'lucide-react'
+import { Radio, Phone, Mail, MapPin, Clock } from 'lucide-react'
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
-    <footer className="bg-gray-900 text-white" role="contentinfo">
+    <footer className="bg-gray-900 text-white" role="contentinfo" aria-label="Site footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
-          <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-4 group w-fit">
+          <div className="col-span-1 md:col-span-2 lg:col-span-1">
+            <Link 
+              href="/" 
+              className="flex items-center space-x-2 mb-4 group w-fit focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900 rounded"
+              aria-label="WalkieRentals home"
+            >
               <Radio className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" aria-hidden="true" />
               <span className="text-xl font-bold group-hover:text-primary transition-colors">WalkieRentals</span>
             </Link>
-            <p className="text-gray-400 mb-4 leading-relaxed">
-              Professional walkie talkie rentals for events, productions, and communication needs. 
-              Reliable equipment, nationwide shipping, and expert support.
+            <p className="text-gray-400 mb-6 leading-relaxed text-sm">
+              Professional production communication equipment rental for film, TV, and live events. 
+              Broadcast-grade Motorola radios with 24/7 support.
             </p>
-            <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
-              <div className="flex items-center space-x-2 text-sm text-gray-400 group">
-                <Phone className="h-4 w-4 group-hover:text-primary transition-colors" aria-hidden="true" />
-                <a href="tel:5551234567" className="hover:text-white transition-colors">(555) 123-4567</a>
+            
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-white mb-3 sr-only">Contact Information</h3>
+              <a 
+                href="tel:5551234567" 
+                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                aria-label="Call us at (555) 123-4567"
+              >
+                <Phone className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
+                <span>(555) 123-4567</span>
+              </a>
+              <a 
+                href="mailto:info@walkierentals.com" 
+                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                aria-label="Email us at info@walkierentals.com"
+              >
+                <Mail className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
+                <span>info@walkierentals.com</span>
+              </a>
+              <div className="flex items-center space-x-2 text-sm text-gray-400">
+                <MapPin className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                <span>Nationwide Shipping</span>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-400 group">
-                <Mail className="h-4 w-4 group-hover:text-primary transition-colors" aria-hidden="true" />
-                <a href="mailto:info@walkierentals.com" className="hover:text-white transition-colors">info@walkierentals.com</a>
+              <div className="flex items-center space-x-2 text-sm text-gray-400">
+                <Clock className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+                <span>24/7 Support Available</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
-          <nav aria-label="Footer navigation">
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link href="/" className="text-gray-400 hover:text-white transition-colors hover:translate-x-1 inline-block">Home</Link></li>
-              <li><Link href="/packages" className="text-gray-400 hover:text-white transition-colors hover:translate-x-1 inline-block">Packages</Link></li>
-              <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors hover:translate-x-1 inline-block">Contact</Link></li>
-              <li><Link href="/#faq" className="text-gray-400 hover:text-white transition-colors hover:translate-x-1 inline-block">FAQ</Link></li>
+          <nav aria-labelledby="footer-navigation-heading">
+            <h3 id="footer-navigation-heading" className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">Quick Links</h3>
+            <ul className="space-y-3" role="list">
+              <li>
+                <Link 
+                  href="/" 
+                  className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                >
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">Home</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/packages" 
+                  className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                >
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">Production Packages</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/contact" 
+                  className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                >
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">Contact & Quote</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/#faq" 
+                  className="text-sm text-gray-400 hover:text-white transition-colors inline-flex items-center group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                >
+                  <span className="group-hover:translate-x-1 transition-transform inline-block">FAQ</span>
+                </Link>
+              </li>
             </ul>
           </nav>
 
           {/* Services */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Services</h3>
-            <ul className="space-y-2" aria-label="Services offered">
-              <li><span className="text-gray-400">Event Rentals</span></li>
-              <li><span className="text-gray-400">Production Support</span></li>
-              <li><span className="text-gray-400">Corporate Events</span></li>
-              <li><span className="text-gray-400">Nationwide Shipping</span></li>
+            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">Our Services</h3>
+            <ul className="space-y-3" role="list">
+              <li className="text-sm text-gray-400 flex items-start">
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0" aria-hidden="true"></span>
+                <span>Film & TV Production</span>
+              </li>
+              <li className="text-sm text-gray-400 flex items-start">
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0" aria-hidden="true"></span>
+                <span>Live Event Production</span>
+              </li>
+              <li className="text-sm text-gray-400 flex items-start">
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0" aria-hidden="true"></span>
+                <span>Corporate Events</span>
+              </li>
+              <li className="text-sm text-gray-400 flex items-start">
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0" aria-hidden="true"></span>
+                <span>Concert & Festival Support</span>
+              </li>
+              <li className="text-sm text-gray-400 flex items-start">
+                <span className="inline-block w-1.5 h-1.5 bg-primary rounded-full mt-1.5 mr-2 flex-shrink-0" aria-hidden="true"></span>
+                <span>Same-Day Shipping</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Support & Resources */}
+          <div>
+            <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">Support</h3>
+            <ul className="space-y-3" role="list">
+              <li>
+                <span className="text-sm text-gray-400 block">
+                  <strong className="text-white">Hours:</strong><br />
+                  Mon-Fri: 8am-6pm EST<br />
+                  Sat: 9am-3pm EST
+                </span>
+              </li>
+              <li className="pt-2">
+                <span className="text-sm text-primary font-semibold">24/7 Emergency Support</span>
+                <p className="text-xs text-gray-400 mt-1">For active rentals</p>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between">
-          <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} WalkieRentals. All rights reserved.
-          </p>
-          <nav aria-label="Legal navigation" className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1">
-              Terms of Service
-            </Link>
-          </nav>
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 mt-10 pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-gray-400 text-sm">
+              © {currentYear} WalkieRentals. All rights reserved.
+            </p>
+            <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-6">
+              <Link 
+                href="/privacy" 
+                className="text-gray-400 hover:text-white text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
+              >
+                Privacy Policy
+              </Link>
+              <Link 
+                href="/terms" 
+                className="text-gray-400 hover:text-white text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
+              >
+                Terms of Service
+              </Link>
+              <Link 
+                href="/accessibility" 
+                className="text-gray-400 hover:text-white text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded px-2 py-1"
+              >
+                Accessibility
+              </Link>
+            </nav>
+          </div>
         </div>
       </div>
     </footer>
