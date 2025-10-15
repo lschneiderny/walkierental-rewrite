@@ -185,17 +185,17 @@ async function main() {
   console.log('\nCreating walkie packages...')
   const walkiePackages = [
     {
-      id: "crew-4",
-      name: "Crew of 4",
-      description: "Perfect for small production crews",
-      walkieCount: 4,
+      id: "crew-6",
+      name: "Crew of 6",
+      description: "Perfect for small to medium production crews",
+      walkieCount: 6,
       batteriesPerWalkie: 2,
       headsetsPerWalkie: 1,
-      dailyRate: 120,
-      weeklyRate: 600,
+      dailyRate: 150,
+      weeklyRate: 750,
       popular: false,
       headsetDistribution: {
-        "2-Wire Surveillance Kit": 4,
+        "2-Wire Surveillance Kit": 6,
         "HMN9013B Lightweight Headset": 0,
         "Remote Speaker Microphone": 0
       }
@@ -217,9 +217,25 @@ async function main() {
       }
     },
     {
+      id: "crew-12",
+      name: "Crew of 12",
+      description: "Great for larger production teams",
+      walkieCount: 12,
+      batteriesPerWalkie: 2,
+      headsetsPerWalkie: 1,
+      dailyRate: 260,
+      weeklyRate: 1300,
+      popular: false,
+      headsetDistribution: {
+        "2-Wire Surveillance Kit": 10,
+        "HMN9013B Lightweight Headset": 2,
+        "Remote Speaker Microphone": 0
+      }
+    },
+    {
       id: "crew-16",
       name: "Crew of 16",
-      description: "Great for large production crews",
+      description: "Perfect for large production crews",
       walkieCount: 16,
       batteriesPerWalkie: 2,
       headsetsPerWalkie: 1,
@@ -230,6 +246,38 @@ async function main() {
         "2-Wire Surveillance Kit": 12,
         "HMN9013B Lightweight Headset": 2,
         "Remote Speaker Microphone": 2
+      }
+    },
+    {
+      id: "crew-24",
+      name: "Crew of 24",
+      description: "Ideal for major film and TV productions",
+      walkieCount: 24,
+      batteriesPerWalkie: 2,
+      headsetsPerWalkie: 1,
+      dailyRate: 450,
+      weeklyRate: 2250,
+      popular: false,
+      headsetDistribution: {
+        "2-Wire Surveillance Kit": 18,
+        "HMN9013B Lightweight Headset": 4,
+        "Remote Speaker Microphone": 2
+      }
+    },
+    {
+      id: "crew-32",
+      name: "Crew of 32",
+      description: "Enterprise solution for the largest productions",
+      walkieCount: 32,
+      batteriesPerWalkie: 2,
+      headsetsPerWalkie: 1,
+      dailyRate: 580,
+      weeklyRate: 2900,
+      popular: false,
+      headsetDistribution: {
+        "2-Wire Surveillance Kit": 24,
+        "HMN9013B Lightweight Headset": 4,
+        "Remote Speaker Microphone": 4
       }
     }
   ]
@@ -250,7 +298,7 @@ async function main() {
   let walkieCount = 0
   
   // Create enough walkies to cover the largest package (32) with some spares
-  for (let i = 1; i <= 40; i++) {
+  for (let i = 1; i <= 50; i++) {
     const model = walkieModels[i % 2]
     await prisma.walkie.create({
       data: {
@@ -267,7 +315,7 @@ async function main() {
   // Create batteries (2 per walkie + spares)
   console.log('\nCreating batteries...')
   let batteryCount = 0
-  for (let i = 1; i <= 90; i++) {
+  for (let i = 1; i <= 120; i++) {
     await prisma.battery.create({
       data: {
         model: 'Motorola CP200 LiOn Battery',
@@ -308,9 +356,9 @@ async function main() {
   // Create headsets
   console.log('\nCreating headsets...')
   const headsetTypes = [
-    { type: '2-Wire Surveillance Kit', count: 50 },
-    { type: 'HMN9013B Lightweight Headset', count: 10 },
-    { type: 'Remote Speaker Microphone', count: 10 },
+    { type: '2-Wire Surveillance Kit', count: 70 },
+    { type: 'HMN9013B Lightweight Headset', count: 15 },
+    { type: 'Remote Speaker Microphone', count: 15 },
   ]
   
   let headsetNum = 1

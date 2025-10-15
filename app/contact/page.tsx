@@ -1,160 +1,226 @@
 'use client'
 
-import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight } from 'lucide-react'
+import { Phone, Mail, MessageSquare, Clock, CheckCircle, Send, ArrowRight } from 'lucide-react'
 import { motion } from "motion/react"
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
+import { fadeInUp, staggerContainer, scaleIn, slideInRight, scrollViewport, staggerTransition } from '@/lib/animations'
+import { useState } from 'react'
+import AnimatedBanner from '@/components/AnimatedBanner'
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('Form submitted:', formData)
+  }
+
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />
-          <div className="absolute top-40 right-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />
-          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />
+      {/* Hero Section with Gradient Overlay */}
+      <section className="relative pt-32 pb-20 overflow-hidden">
+        {/* Background Image with Gradient Overlay */}
+        <div className="absolute inset-0 z-0">
+          {/* Placeholder for background image */}
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/80 via-purple-600/80 to-blue-600/80" />
+          <div className="absolute inset-0 bg-gray-900/20" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div 
-            className="text-center"
+            className="text-center text-white"
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
-            transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Let&apos;s Talk About Your
-              <span className="gradient-text block">Production Needs</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+              Get in Touch
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Whether you need same-day equipment or have questions about our services, 
-              our production communications experts are here to help.
+            <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+              Ready to elevate your production communication? Let&apos;s talk.
             </p>
-            
-            {/* Quick Stats */}
-            <motion.div 
-              className="flex flex-wrap justify-center gap-8 mt-8"
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
-            >
-              {[
-                { icon: <Clock className="h-6 w-6" />, label: '2-Hour Response', text: 'Average' },
-                { icon: <Phone className="h-6 w-6" />, label: '24/7 Support', text: 'Always Available' },
-                { icon: <CheckCircle className="h-6 w-6" />, label: 'Expert Team', text: 'Production Pros' }
-              ].map((stat, index) => (
-                <motion.div 
-                  key={index}
-                  className="flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 shadow-soft"
-                  variants={fadeInUp}
-                >
-                  <div className="text-primary">
-                    {stat.icon}
-                  </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-gray-900">{stat.label}</div>
-                    <div className="text-sm text-gray-600">{stat.text}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
           </motion.div>
         </div>
-      </section>
+        </section>
+
+        {/* Animated Banner */}
+        <AnimatedBanner 
+          message="Need a more specific quote? Talk to the walkie rental experts at GothamSound.com"
+          linkText="Visit GothamSound"
+          linkUrl="https://gothamsound.com"
+          backgroundColor="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500"
+          className="shadow-lg"
+        />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Contact Section */}
-        <section className="py-16">
-          <motion.div 
-            className="max-w-4xl mx-auto"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-          >
-            {/* Quick Contact Cards */}
+        {/* Contact Cards & Form Section */}
+        <section className="py-16 -mt-16 relative z-20">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Side - Contact Cards */}
             <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-              variants={fadeInUp}
+              className="lg:col-span-1 space-y-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={scrollViewport}
+              variants={staggerContainer}
+              transition={staggerTransition}
             >
-              <a 
+              {/* Phone Card */}
+              <motion.a 
                 href="tel:5551234567"
-                className="group bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-8 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                className="block bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
+                variants={scaleIn}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <Phone className="h-6 w-6" />
-                      <span className="text-sm font-medium opacity-90">Call Us Now</span>
-                    </div>
-                    <div className="text-2xl font-bold">(555) 123-4567</div>
-                    <div className="text-sm opacity-90 mt-1">Mon-Fri, 8am-6pm EST</div>
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="bg-white/20 p-3 rounded-lg group-hover:bg-white/30 transition-colors">
+                    <Phone className="h-6 w-6" />
                   </div>
-                  <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  <div>
+                    <div className="text-sm font-medium opacity-90">Call Us</div>
+                    <div className="text-xl font-bold">(555) 123-4567</div>
+                  </div>
                 </div>
-              </a>
+                <p className="text-sm opacity-90">Mon-Fri: 8am-6pm EST</p>
+              </motion.a>
 
-              <a 
+              {/* Email Card */}
+              <motion.a 
                 href="mailto:info@walkierentals.com"
-                className="group bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-8 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                className="block bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
+                variants={scaleIn}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <Mail className="h-6 w-6" />
-                      <span className="text-sm font-medium opacity-90">Email Us</span>
-                    </div>
-                    <div className="text-xl font-bold">info@walkierentals.com</div>
-                    <div className="text-sm opacity-90 mt-1">2-hour response time</div>
+                <div className="flex items-center gap-4 mb-3">
+                  <div className="bg-white/20 p-3 rounded-lg group-hover:bg-white/30 transition-colors">
+                    <Mail className="h-6 w-6" />
                   </div>
-                  <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  <div>
+                    <div className="text-sm font-medium opacity-90">Email Us</div>
+                    <div className="text-lg font-bold">info@walkierentals.com</div>
+                  </div>
                 </div>
-              </a>
+                <p className="text-sm opacity-90">2-hour response time</p>
+              </motion.a>
+
+              {/* Stats Card */}
+              <motion.div 
+                className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-soft"
+                variants={scaleIn}
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-primary" />
+                    <div>
+                      <div className="font-semibold text-gray-900">24/7 Support</div>
+                      <div className="text-sm text-gray-600">Always available</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <div>
+                      <div className="font-semibold text-gray-900">2-Hour Response</div>
+                      <div className="text-sm text-gray-600">Average reply time</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                    <div>
+                      <div className="font-semibold text-gray-900">Expert Team</div>
+                      <div className="text-sm text-gray-600">Production pros</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
 
-            {/* Additional Contact Info */}
+            {/* Right Side - Contact Form */}
             <motion.div 
-              className="bg-white border border-gray-200 rounded-xl p-8"
-              variants={fadeInUp}
+              className="lg:col-span-2"
+              initial="hidden"
+              whileInView="visible"
+              viewport={scrollViewport}
+              variants={slideInRight}
             >
-              <h3 className="font-bold text-gray-900 mb-6 text-xl">Other Ways to Reach Us</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-medium text-gray-900">Nationwide Shipping</div>
-                    <div className="text-sm text-gray-600">Continental United States</div>
-                  </div>
-                </div>
+              <div className="bg-white rounded-2xl shadow-soft-lg p-8 border border-gray-100">
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Send us a message</h2>
+                <p className="text-gray-600 mb-8">Fill out the form below and we&apos;ll get back to you within 2 hours during business hours.</p>
                 
-                <div className="flex items-start gap-3">
-                  <Clock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <div className="font-medium text-gray-900">Business Hours</div>
-                    <div className="text-sm text-gray-600">Mon-Fri: 8am-6pm EST</div>
-                    <div className="text-sm text-gray-600">Sat: 9am-3pm EST</div>
-                    <div className="text-sm text-gray-600">Sun: Closed</div>
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
+                      Your Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all"
+                      placeholder="John Doe"
+                    />
                   </div>
-                </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-semibold text-gray-900 mb-2">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all"
+                        placeholder="(555) 123-4567"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-semibold text-gray-900 mb-2">
+                      Message *
+                    </label>
+                    <textarea
+                      id="message"
+                      required
+                      rows={6}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all resize-none"
+                      placeholder="Tell us about your production needs..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-4 px-8 rounded-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2 group"
+                  >
+                    <Send className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    Send Message
+                  </button>
+                </form>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </section>
 
         {/* FAQ Section */}
@@ -162,9 +228,8 @@ export default function ContactPage() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={fadeInUp}
-            transition={{ duration: 0.5 }}
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
@@ -178,8 +243,9 @@ export default function ContactPage() {
             className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={staggerContainer}
+            transition={staggerTransition}
           >
             {[
               {
@@ -202,7 +268,7 @@ export default function ContactPage() {
               <motion.div 
                 key={index}
                 className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl p-6 border border-gray-100 hover:shadow-soft transition-all duration-300"
-                variants={fadeInUp}
+                variants={scaleIn}
               >
                 <h3 className="font-semibold text-gray-900 mb-3">{faq.question}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
@@ -214,9 +280,8 @@ export default function ContactPage() {
             className="text-center"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={fadeInUp}
-            transition={{ duration: 0.5, delay: 0.2 }}
           >
             <p className="text-gray-600 mb-6">
               Have more questions? We&apos;re here to help!
@@ -246,9 +311,8 @@ export default function ContactPage() {
             className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-12 text-white text-center overflow-hidden shadow-soft-lg"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
-            transition={{ duration: 0.5 }}
+            viewport={scrollViewport}
+            variants={scaleIn}
           >
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">

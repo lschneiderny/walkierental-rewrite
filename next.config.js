@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Next.js 14 uses app directory by default
+const path = require('path')
+module.exports = {
+  turbopack: {
+    root: path.join(__dirname, '..'),
+  },
 }
-
-module.exports = nextConfig

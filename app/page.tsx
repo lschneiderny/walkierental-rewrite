@@ -4,25 +4,10 @@ import Link from 'next/link'
 import Hero from '@/components/Hero'
 import { Truck, Shield, Clock, Phone, ArrowRight, ShoppingCart } from 'lucide-react'
 import { motion } from "motion/react"
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Package } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'
-
-// Simplified animation variants for better performance
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
+import { fadeInUp, staggerContainer, scaleIn, scrollViewport, staggerTransition } from '@/lib/animations'
 
 export default function Home() {
   const [packages, setPackages] = useState<Package[]>([])
@@ -117,9 +102,8 @@ export default function Home() {
             className="text-3xl font-bold text-center mb-12"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={fadeInUp}
-            transition={{ duration: 0.5 }}
           >
             How it works
           </motion.h2>
@@ -127,8 +111,9 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-4 gap-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={staggerContainer}
+            transition={staggerTransition}
           >
             {[
               {
@@ -155,8 +140,7 @@ export default function Home() {
               <motion.div 
                 key={step.step} 
                 className="text-center group"
-                variants={fadeInUp}
-                transition={{ duration: 0.4 }}
+                variants={scaleIn}
               >
                 <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-blue-600 text-white font-bold text-xl rounded-full mx-auto mb-4 shadow-lg transition-transform duration-300 group-hover:scale-110">
                   {step.step}
@@ -178,9 +162,8 @@ export default function Home() {
             className="flex items-center justify-between mb-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={fadeInUp}
-            transition={{ duration: 0.5 }}
           >
             <h2 className="text-3xl font-bold">Production Packages</h2>
             <Link 
@@ -196,8 +179,9 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={staggerContainer}
+            transition={staggerTransition}
           >
             {loading ? (
               // Loading skeleton
@@ -215,7 +199,6 @@ export default function Home() {
                 key={pkg.id} 
                 className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-soft-lg will-change-transform"
                 variants={fadeInUp}
-                transition={{ duration: 0.4 }}
               >
                 <div className="mb-4">
                   <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{pkg.name}</h3>
@@ -286,9 +269,8 @@ export default function Home() {
             className="text-3xl font-bold text-center mb-12"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={fadeInUp}
-            transition={{ duration: 0.5 }}
           >
             Why Production Teams Trust Us
           </motion.h2>
@@ -296,8 +278,9 @@ export default function Home() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={staggerContainer}
+            transition={staggerTransition}
           >
             {[
               {
@@ -324,8 +307,7 @@ export default function Home() {
               <motion.div 
                 key={index} 
                 className="text-center group"
-                variants={fadeInUp}
-                transition={{ duration: 0.4 }}
+                variants={scaleIn}
               >
                 <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 text-primary rounded-full mx-auto mb-4 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">
                   {feature.icon}
@@ -343,9 +325,8 @@ export default function Home() {
             className="text-3xl font-bold text-center mb-12"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={fadeInUp}
-            transition={{ duration: 0.5 }}
           >
             Frequently Asked Questions
           </motion.h2>
@@ -353,8 +334,9 @@ export default function Home() {
             className="max-w-3xl mx-auto space-y-6"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={scrollViewport}
             variants={staggerContainer}
+            transition={staggerTransition}
           >
             {[
               {
@@ -378,7 +360,6 @@ export default function Home() {
                 key={index} 
                 className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg p-6 hover:shadow-soft transition-shadow duration-300 border border-gray-100"
                 variants={fadeInUp}
-                transition={{ duration: 0.4 }}
               >
                 <h3 className="font-semibold mb-3">{faq.question}</h3>
                 <p className="text-gray-600">{faq.answer}</p>
@@ -393,9 +374,8 @@ export default function Home() {
             className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white text-center overflow-hidden shadow-soft-lg"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeInUp}
-            transition={{ duration: 0.5 }}
+            viewport={scrollViewport}
+            variants={scaleIn}
           >
             <div className="relative z-10">
               <h2 className="text-3xl font-bold mb-4">

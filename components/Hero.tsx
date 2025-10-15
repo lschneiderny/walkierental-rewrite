@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 import { motion } from "motion/react"
+import { fadeInUp, slideInRight, staggerContainer, staggerTransition } from '@/lib/animations'
 
 export default function Hero() {
   return (
@@ -18,9 +19,9 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
               Professional 
@@ -36,22 +37,29 @@ export default function Hero() {
             </p>
 
             {/* Features */}
-            <div className="mt-8 space-y-3">
+            <motion.div 
+              className="mt-8 space-y-3"
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              transition={{...staggerTransition, delayChildren: 0.3}}
+            >
               {[
                 'Broadcast-grade Motorola equipment',
                 'Pre-programmed & production-ready',
                 '24/7 on-set technical support',
                 'Same-day shipping available'
               ].map((feature, index) => (
-                <div 
+                <motion.div 
                   key={index} 
                   className="flex items-center space-x-3"
+                  variants={fadeInUp}
                 >
                   <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-700">{feature}</span>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* CTA Buttons */}
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
@@ -74,9 +82,9 @@ export default function Hero() {
           {/* Right Content - Image Placeholder */}
           <motion.div 
             className="lg:pl-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial="hidden"
+            animate="visible"
+            variants={slideInRight}
           >
             <div className="relative">
               <div className="aspect-[4/3] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center shadow-soft-lg transition-transform duration-300 hover:scale-[1.02]">

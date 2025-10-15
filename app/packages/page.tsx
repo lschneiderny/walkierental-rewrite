@@ -7,23 +7,8 @@ import { useEffect, useState, useMemo } from 'react'
 import { WalkiePackage } from '@/lib/types'
 import { HeadsetDistribution } from '@/lib/quote-types'
 import { useQuote } from '@/contexts/QuoteContext'
+import { scaleIn, scrollViewport } from '@/lib/animations'
 
-// Simplified animation variants for better performance
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-}
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0
-    }
-  }
-}
 
 const HEADSET_TYPES = [
   { key: '2-Wire Surveillance Kit' as const, label: '2-Wire Surveillance', shortLabel: '2-Wire' },
@@ -43,8 +28,13 @@ export default function PackagesPage() {
     async function fetchPackages() {
       try {
         const res = await fetch('/api/walkie-packages', {
-          next: { revalidate: 60 }
+          cache: 'no-store'
         })
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
+        
         const data = await res.json()
         setPackages(data)
         
@@ -155,8 +145,7 @@ export default function PackagesPage() {
           className="text-center mb-12"
           initial="hidden"
           animate="visible"
-          variants={fadeInUp}
-          transition={{ duration: 0.3 }}
+          variants={scaleIn}
         >
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Turnkey Walkie Talkie Rental Packages
@@ -183,12 +172,7 @@ export default function PackagesPage() {
         </div>
 
         {/* Packages Grid */}
-        <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16"
-          initial="hidden"
-          animate={loading ? "hidden" : "visible"}
-          variants={staggerContainer}
-        >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {loading ? (
             // Loading skeleton
             [1, 2, 3, 4, 5, 6].map((i) => (
@@ -199,6 +183,11 @@ export default function PackagesPage() {
                 <div className="h-32 bg-gray-200 rounded"></div>
               </div>
             ))
+          ) : packages.length === 0 ? (
+            <div className="col-span-full text-center py-16">
+              <p className="text-xl text-gray-600">No packages available at this time.</p>
+              <p className="text-sm text-gray-500 mt-2">Please check back later or contact us for custom quotes.</p>
+            </div>
           ) : (
             packages.map((pkg) => {
               const distribution = headsetSelections[pkg.id]
@@ -207,11 +196,9 @@ export default function PackagesPage() {
               const expectedHeadsets = pkg.walkieCount * pkg.headsetsPerWalkie
               
               return (
-            <motion.div 
+            <div 
               key={pkg.id} 
-              className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-200 hover-lift-fast transform-gpu"
-              variants={fadeInUp}
-              transition={{ duration: 0.3 }}
+              className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-200"
             >
               {/* Package Header */}
               <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-white to-blue-50/20">
@@ -335,20 +322,19 @@ export default function PackagesPage() {
                   Add to Quote
                 </button>
               </div>
-            </motion.div>
+            </div>
               )
             })
           )}
-        </motion.div>
+        </div>
 
         {/* Bottom CTA */}
         <motion.div 
           className="text-center py-16 border-t border-gray-200"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={fadeInUp}
-          transition={{ duration: 0.3 }}
+          viewport={scrollViewport}
+          variants={scaleIn}
         >
           <h2 className="text-2xl font-bold mb-4">Need a custom production package?</h2>
           <p className="text-gray-600 mb-6">
