@@ -39,7 +39,7 @@ export default function Home() {
     "name": "WalkieRentals",
     "url": "https://walkierentals.com",
     "logo": "https://walkierentals.com/logo.png",
-    "description": "Professional production communication equipment rental for film, TV, and live event productions. Broadcast-grade Motorola MOTOTRBO radios with 24/7 on-set technical support.",
+    "description": "Professional production communication equipment rental for film, TV, and live event productions. Production-ready equipment with knowlagable technical support.",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+1-555-123-4567",
@@ -110,8 +110,8 @@ export default function Home() {
               </h1>
 
               <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-              Crystal-clear communication for film, TV, and live event productions. 
-              Broadcast-quality equipment with nationwide delivery and 24/7 production support.
+              Reliable communication for film, TV, and live event productions. 
+              Production-ready equipment with nationwide delivery and support.
               </p>
 
               {/* Features */}
@@ -125,7 +125,7 @@ export default function Home() {
               {[
                 'Broadcast-grade Motorola equipment',
                 'Pre-programmed & production-ready',
-                '24/7 on-set technical support',
+                'technical support',
                 'Same-day shipping available'
                 ].map((feature, index) => (
                   <motion.div
@@ -184,8 +184,6 @@ export default function Home() {
                 </div>
 
                 <div className="absolute -top-6 -right-6 bg-white rounded-lg shadow-soft-lg p-4 border border-gray-100 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
-                  <div className="text-2xl font-bold gradient-text">24/7</div>
-                  <div className="text-sm text-gray-600">On-Set Support</div>
                 </div>
               </div>
             </motion.div>
@@ -229,7 +227,7 @@ export default function Home() {
               {
                 step: 3,
                 title: "PRODUCTION DAY",
-                description: "Crystal-clear communication with 24/7 technical support throughout your shoot."
+                description: "Crystal-clear communication with technical support throughout your shoot."
               },
               {
                 step: 4,
@@ -405,7 +403,7 @@ export default function Home() {
                 },
                 {
                   icon: <Phone className="h-8 w-8" />,
-                  title: "24/7 Tech Support",
+                  title: "Technical Support",
                   description:
                     "Real production professionals on call around the clock. We understand set life.",
                 },

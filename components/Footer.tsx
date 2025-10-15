@@ -20,7 +20,7 @@ export default function Footer() {
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed text-sm">
               Professional production communication equipment rental for film, TV, and live events. 
-              Broadcast-grade Motorola radios with 24/7 support.
+              Broadcast-grade Motorola radios with experienced technical support.
             </p>
             
             {/* Contact Info */}
@@ -48,7 +48,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-sm text-gray-400">
                 <Clock className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                <span>24/7 Support Available</span>
+                <span>Technical Support Available</span>
               </div>
             </div>
           </div>
@@ -131,8 +131,6 @@ export default function Footer() {
                 </span>
               </li>
               <li className="pt-2">
-                <span className="text-sm text-primary font-semibold">24/7 Emergency Support</span>
-                <p className="text-xs text-gray-400 mt-1">For active rentals</p>
               </li>
             </ul>
           </div>
