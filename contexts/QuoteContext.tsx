@@ -1,14 +1,15 @@
 'use client'
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react'
-import { Package } from '@/lib/types'
-import { QuoteItem } from '@/lib/quote-types'
+import { Package, WalkiePackage } from '@/lib/types'
+import { QuoteItem, HeadsetDistribution } from '@/lib/quote-types'
 
 interface QuoteContextType {
   quoteItems: QuoteItem[]
-  addToQuote: (pkg: Package, quantity?: number) => void
+  addToQuote: (pkg: Package | WalkiePackage, quantity?: number) => void
   removeFromQuote: (packageId: string) => void
   updateQuantity: (packageId: string, quantity: number) => void
+  updateHeadsetDistribution: (packageId: string, distribution: HeadsetDistribution) => void
   clearQuote: () => void
   getTotalItems: () => number
 }
@@ -18,7 +19,7 @@ const QuoteContext = createContext<QuoteContextType | undefined>(undefined)
 export function QuoteProvider({ children }: { children: ReactNode }) {
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([])
 
-  const addToQuote = useCallback((pkg: Package, quantity: number = 1) => {
+  const addToQuote = useCallback((pkg: Package | WalkiePackage, quantity: number = 1) => {
     setQuoteItems(prev => {
       const existingIndex = prev.findIndex(item => item.packageId === pkg.id)
       
@@ -32,13 +33,19 @@ export function QuoteProvider({ children }: { children: ReactNode }) {
         return updated
       }
       
+      // Check if this is a WalkiePackage
+      const isWalkiePackage = 'walkieCount' in pkg
+      
       // Add new item
       return [...prev, {
         packageId: pkg.id,
         packageName: pkg.name,
+        walkieCount: isWalkiePackage ? pkg.walkieCount : undefined,
+        batteriesPerWalkie: isWalkiePackage ? pkg.batteriesPerWalkie : undefined,
         dailyRate: pkg.dailyRate,
         weeklyRate: pkg.weeklyRate,
-        quantity
+        quantity,
+        headsetDistribution: isWalkiePackage ? pkg.headsetDistribution : undefined
       }]
     })
   }, [])
@@ -62,6 +69,16 @@ export function QuoteProvider({ children }: { children: ReactNode }) {
     )
   }, [removeFromQuote])
 
+  const updateHeadsetDistribution = useCallback((packageId: string, distribution: HeadsetDistribution) => {
+    setQuoteItems(prev => 
+      prev.map(item => 
+        item.packageId === packageId 
+          ? { ...item, headsetDistribution: distribution }
+          : item
+      )
+    )
+  }, [])
+
   const clearQuote = useCallback(() => {
     setQuoteItems([])
   }, [])
@@ -77,6 +94,7 @@ export function QuoteProvider({ children }: { children: ReactNode }) {
         addToQuote,
         removeFromQuote,
         updateQuantity,
+        updateHeadsetDistribution,
         clearQuote,
         getTotalItems
       }}

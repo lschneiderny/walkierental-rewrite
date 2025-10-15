@@ -1,10 +1,11 @@
 "use client";
 
 import Link from 'next/link'
-import { Radio, Signal, Battery, Users, ShoppingCart } from 'lucide-react'
+import { Radio, Signal, Battery, Users, ShoppingCart, Headphones } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useEffect, useState, useMemo } from 'react'
-import { Package } from '@/lib/types'
+import { WalkiePackage } from '@/lib/types'
+import { HeadsetDistribution } from '@/lib/quote-types'
 import { useQuote } from '@/contexts/QuoteContext'
 
 // Simplified animation variants for better performance
@@ -24,19 +25,35 @@ const staggerContainer = {
   }
 }
 
+const HEADSET_TYPES = [
+  { key: '2-Wire Surveillance Kit' as const, label: '2-Wire Surveillance', shortLabel: '2-Wire' },
+  { key: 'HMN9013B Lightweight Headset' as const, label: 'HMN9013B Lightweight', shortLabel: 'Lightweight' },
+  { key: 'Remote Speaker Microphone' as const, label: 'Remote Speaker Mic', shortLabel: 'Speaker Mic' },
+]
+
 export default function PackagesPage() {
-  const [packages, setPackages] = useState<Package[]>([])
+  const [packages, setPackages] = useState<WalkiePackage[]>([])
   const [loading, setLoading] = useState(true)
   const { addToQuote } = useQuote()
+  
+  // Track headset distributions for each package
+  const [headsetSelections, setHeadsetSelections] = useState<Record<string, HeadsetDistribution>>({})
 
   useEffect(() => {
     async function fetchPackages() {
       try {
-        const res = await fetch('/api/packages', {
+        const res = await fetch('/api/walkie-packages', {
           next: { revalidate: 60 }
         })
         const data = await res.json()
         setPackages(data)
+        
+        // Initialize headset selections with default distributions
+        const initialSelections: Record<string, HeadsetDistribution> = {}
+        data.forEach((pkg: WalkiePackage) => {
+          initialSelections[pkg.id] = pkg.headsetDistribution
+        })
+        setHeadsetSelections(initialSelections)
       } catch (error) {
         console.error('Error fetching packages:', error)
       } finally {
@@ -45,6 +62,30 @@ export default function PackagesPage() {
     }
     fetchPackages()
   }, [])
+  
+  const updateHeadsetCount = (packageId: string, headsetType: keyof HeadsetDistribution, value: number) => {
+    setHeadsetSelections(prev => ({
+      ...prev,
+      [packageId]: {
+        ...prev[packageId],
+        [headsetType]: Math.max(0, value)
+      }
+    }))
+  }
+  
+  const getTotalHeadsets = (packageId: string) => {
+    const dist = headsetSelections[packageId]
+    if (!dist) return 0
+    return dist['2-Wire Surveillance Kit'] + dist['HMN9013B Lightweight Headset'] + dist['Remote Speaker Microphone']
+  }
+  
+  const handleAddToQuote = (pkg: WalkiePackage) => {
+    const customPkg = {
+      ...pkg,
+      headsetDistribution: headsetSelections[pkg.id] || pkg.headsetDistribution
+    }
+    addToQuote(customPkg)
+  }
   
   // Memoize structured data - only recalculate when packages change
   const packagesSchema = useMemo(() => ({
@@ -56,7 +97,7 @@ export default function PackagesPage() {
       "item": {
         "@type": "Product",
         "name": pkg.name,
-        "description": pkg.description,
+        "description": `Production comms package with ${pkg.walkieCount} walkie-talkies, ${pkg.walkieCount * pkg.batteriesPerWalkie} batteries, and ${pkg.walkieCount * pkg.headsetsPerWalkie} headsets`,
         "brand": {
           "@type": "Brand",
           "name": "WalkieRentals"
@@ -103,11 +144,11 @@ export default function PackagesPage() {
           transition={{ duration: 0.3 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Production Communication Packages
+            Turnkey Walkie Talkie Rental Packages
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Broadcast-quality communication systems for film, TV, and live event productions. 
-            All packages include pre-programming, same-day shipping, and 24/7 on-set support.
+            Complete production communication packages for film, TV, and live events.
+            Each walkie includes 2 batteries and 1 headset. Customize your headset selection below.
           </p>
         </motion.div>
 
@@ -144,7 +185,13 @@ export default function PackagesPage() {
               </div>
             ))
           ) : (
-            packages.map((pkg) => (
+            packages.map((pkg) => {
+              const distribution = headsetSelections[pkg.id]
+              const totalHeadsets = getTotalHeadsets(pkg.id)
+              const totalBatteries = pkg.walkieCount * pkg.batteriesPerWalkie
+              const expectedHeadsets = pkg.walkieCount * pkg.headsetsPerWalkie
+              
+              return (
             <motion.div 
               key={pkg.id} 
               className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-primary/50 transition-colors duration-200 hover-lift-fast transform-gpu"
@@ -155,8 +202,8 @@ export default function PackagesPage() {
               <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-white to-blue-50/20">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors duration-200">{pkg.name}</h3>
-                    <p className="text-gray-600 mb-4">{pkg.description}</p>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors duration-200">{pkg.name}</h3>
+                    <p className="text-gray-600">Complete turnkey production package</p>
                   </div>
                   <div className="text-right">
                     <div className="text-3xl font-bold gradient-text">${pkg.dailyRate}</div>
@@ -166,82 +213,92 @@ export default function PackagesPage() {
                 </div>
               </div>
 
-              {/* Package Details */}
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Left Column - What's Included */}
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">What's Included:</h4>
-                    <ul className="space-y-2">
-                      {pkg.includes.map((item, index) => (
-                        <li key={index} className="flex items-start text-sm text-gray-600">
-                          <div className="w-1.5 h-1.5 bg-primary rounded-full mr-3 mt-2 flex-shrink-0"></div>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
+              {/* Package Contents */}
+              <div className="p-6 space-y-6">
+                {/* Equipment Summary */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Package Contents:</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-blue-50 rounded-lg p-3 text-center">
+                      <Radio className="h-6 w-6 text-primary mx-auto mb-1" />
+                      <div className="text-2xl font-bold text-gray-900">{pkg.walkieCount}</div>
+                      <div className="text-xs text-gray-600">Walkies</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 text-center">
+                      <Battery className="h-6 w-6 text-green-600 mx-auto mb-1" />
+                      <div className="text-2xl font-bold text-gray-900">{totalBatteries}</div>
+                      <div className="text-xs text-gray-600">Batteries</div>
+                    </div>
+                    <div className="bg-purple-50 rounded-lg p-3 text-center">
+                      <Headphones className="h-6 w-6 text-purple-600 mx-auto mb-1" />
+                      <div className="text-2xl font-bold text-gray-900">{expectedHeadsets}</div>
+                      <div className="text-xs text-gray-600">Headsets</div>
+                    </div>
                   </div>
+                </div>
 
-                  {/* Right Column - Specifications & Best For */}
-                  <div className="space-y-4">
-                    {/* Specifications */}
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Specifications:</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Signal className="h-4 w-4 mr-2 text-primary" />
-                          Range: {pkg.specifications.range}
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Radio className="h-4 w-4 mr-2 text-primary" />
-                          {pkg.specifications.channels} Channels
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Battery className="h-4 w-4 mr-2 text-primary" />
-                          {pkg.specifications.batteryLife} Battery
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Best For */}
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Best for:</h4>
-                      <div className="flex flex-wrap gap-1">
-                        {pkg.bestFor.map((use, index) => (
-                          <span 
-                            key={index} 
-                            className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full"
+                {/* Headset Selection */}
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3">Customize Your Headsets:</h4>
+                  <div className="space-y-3">
+                    {HEADSET_TYPES.map(({ key, label, shortLabel }) => (
+                      <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <span className="text-sm font-medium text-gray-700">
+                          <span className="hidden sm:inline">{label}</span>
+                          <span className="sm:hidden">{shortLabel}</span>
+                        </span>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => updateHeadsetCount(pkg.id, key, (distribution?.[key] || 0) - 1)}
+                            className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
                           >
-                            {use}
-                          </span>
-                        ))}
+                            −
+                          </button>
+                          <span className="w-10 text-center font-semibold text-gray-900">{distribution?.[key] || 0}</span>
+                          <button
+                            onClick={() => updateHeadsetCount(pkg.id, key, (distribution?.[key] || 0) + 1)}
+                            className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    ))}
+                  </div>
+                  
+                  {/* Headset Total Indicator */}
+                  <div className={`mt-3 p-3 rounded-lg text-sm text-center font-medium ${
+                    totalHeadsets === expectedHeadsets 
+                      ? 'bg-green-50 text-green-700 border border-green-200' 
+                      : totalHeadsets < expectedHeadsets
+                      ? 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}>
+                    Total: {totalHeadsets} / {expectedHeadsets} headsets
+                    {totalHeadsets !== expectedHeadsets && (
+                      <span className="ml-2">
+                        {totalHeadsets < expectedHeadsets ? '(Add more)' : '(Too many)'}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
 
-                  {/* Package Footer */}
-                  <div className="px-6 pb-6">
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => addToQuote(pkg)}
-                        className="flex-1 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white text-center py-3 rounded-lg transition-all duration-200 font-semibold flex items-center justify-center gap-2"
-                        aria-label={`Add ${pkg.name} to quote`}
-                      >
-                        <ShoppingCart className="h-5 w-5" />
-                        Add to Quote
-                      </button>
-                      <Link
-                        href={`/packages/${pkg.id}`}
-                        className="flex-1 bg-primary hover:bg-primary-hover text-white text-center py-3 rounded-lg transition-colors duration-200 font-semibold flex items-center justify-center"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
+              {/* Package Footer */}
+              <div className="px-6 pb-6">
+                <button
+                  onClick={() => handleAddToQuote(pkg)}
+                  disabled={totalHeadsets !== expectedHeadsets}
+                  className="w-full bg-primary hover:bg-primary-hover text-white text-center py-3 rounded-lg transition-all duration-200 font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label={`Add ${pkg.name} to quote`}
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  Add to Quote
+                </button>
+              </div>
             </motion.div>
-          ))
+              )
+            })
           )}
         </motion.div>
 

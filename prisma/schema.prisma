@@ -10,12 +10,86 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Walkie Package Configuration
+model WalkiePackage {
+  id                    String   @id @default(cuid())
+  name                  String   // e.g., "6 Walkie Package"
+  walkieCount           Int      // 6, 8, 12, 16, 24, or 32
+  batteriesPerWalkie    Int      @default(2)
+  headsetsPerWalkie     Int      @default(1)
+  dailyRate             Float
+  weeklyRate            Float
+  isActive              Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  // Headset distribution (JSON: {"2-Wire Surveillance Kit": 6, "HMN9013B Lightweight Headset": 0, ...})
+  headsetDistribution   String   @default("{}")
+  
+  bookings              Booking[]
+}
+
+// Individual Walkie Radios
+model Walkie {
+  id              String    @id @default(cuid())
+  model           String    // "Motorola CP200" or "Motorola CP200d"
+  serialNumber    String    @unique
+  status          String    @default("available") // available, rented, maintenance, retired
+  condition       String    @default("excellent") // excellent, good, fair, poor
+  lastServiced    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Individual Batteries
+model Battery {
+  id              String    @id @default(cuid())
+  model           String    @default("Motorola CP200 LiOn Battery")
+  serialNumber    String    @unique
+  status          String    @default("available") // available, rented, maintenance, retired
+  condition       String    @default("excellent") // excellent, good, fair, poor
+  lastServiced    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Individual Chargers
+model Charger {
+  id              String    @id @default(cuid())
+  model           String    // "CP200D 6-Bank Charger", "CP200D 12-Bank Charger", "CP200D Single-Bank Charger"
+  serialNumber    String    @unique
+  bankCount       Int       // 1, 6, or 12
+  status          String    @default("available") // available, rented, maintenance, retired
+  condition       String    @default("excellent") // excellent, good, fair, poor
+  lastServiced    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Individual Headsets
+model Headset {
+  id              String    @id @default(cuid())
+  type            String    // "2-Wire Surveillance Kit", "HMN9013B Lightweight Headset", "Remote Speaker Microphone"
+  serialNumber    String    @unique
+  status          String    @default("available") // available, rented, maintenance, retired
+  condition       String    @default("excellent") // excellent, good, fair, poor
+  lastServiced    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Legacy - keeping for backwards compatibility
 model Package {
   id            String    @id @default(cuid())
   name          String
   description   String
   dailyRate     Float
   weeklyRate    Float
+  walkieCount   Int       @default(0)
   includes      String    // JSON array
   bestFor       String    // JSON array
   range         String
@@ -46,20 +120,22 @@ model InventoryItem {
 }
 
 model Booking {
-  id              String    @id @default(cuid())
-  packageId       String
-  inventoryItemId String?
-  customerName    String
-  customerEmail   String
-  customerPhone   String?
-  startDate       DateTime
-  endDate         DateTime
-  status          String    @default("pending") // pending, confirmed, active, completed, cancelled
-  totalCost       Float
-  notes           String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  packageId         String?
+  walkiePackageId   String?   // New field for WalkiePackage bookings
+  inventoryItemId   String?
+  customerName      String
+  customerEmail     String
+  customerPhone     String?
+  startDate         DateTime
+  endDate           DateTime
+  status            String    @default("pending") // pending, confirmed, active, completed, cancelled
+  totalCost         Float
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   
-  package         Package   @relation(fields: [packageId], references: [id])
-  inventoryItem   InventoryItem? @relation(fields: [inventoryItemId], references: [id])
+  package           Package?        @relation(fields: [packageId], references: [id])
+  walkiePackage     WalkiePackage?  @relation(fields: [walkiePackageId], references: [id])
+  inventoryItem     InventoryItem?  @relation(fields: [inventoryItemId], references: [id])
 }

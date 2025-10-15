@@ -1,8 +1,9 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Trash2, Send, Package as PackageIcon } from 'lucide-react'
+import { X, Trash2, Send, Package as PackageIcon, Headphones, ChevronDown, ChevronUp } from 'lucide-react'
 import { useQuote } from '@/contexts/QuoteContext'
+import { HeadsetDistribution } from '@/lib/quote-types'
 import { useState } from 'react'
 
 interface QuoteModalProps {
@@ -10,8 +11,15 @@ interface QuoteModalProps {
   onClose: () => void
 }
 
+const HEADSET_TYPES = [
+  { key: '2-Wire Surveillance Kit' as const, label: '2-Wire Surveillance Kit' },
+  { key: 'HMN9013B Lightweight Headset' as const, label: 'HMN9013B Lightweight' },
+  { key: 'Remote Speaker Microphone' as const, label: 'Remote Speaker Mic' },
+]
+
 export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
-  const { quoteItems, removeFromQuote, updateQuantity, clearQuote } = useQuote()
+  const { quoteItems, removeFromQuote, updateQuantity, updateHeadsetDistribution, clearQuote } = useQuote()
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -25,6 +33,35 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  
+  const toggleExpanded = (packageId: string) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(packageId)) {
+        newSet.delete(packageId)
+      } else {
+        newSet.add(packageId)
+      }
+      return newSet
+    })
+  }
+  
+  const updateHeadsetCount = (packageId: string, headsetType: keyof HeadsetDistribution, value: number) => {
+    const item = quoteItems.find(i => i.packageId === packageId)
+    if (!item || !item.headsetDistribution) return
+    
+    const newDistribution = {
+      ...item.headsetDistribution,
+      [headsetType]: Math.max(0, value)
+    }
+    updateHeadsetDistribution(packageId, newDistribution)
+  }
+  
+  const getTotalHeadsets = (distribution: HeadsetDistribution) => {
+    return distribution['2-Wire Surveillance Kit'] + 
+           distribution['HMN9013B Lightweight Headset'] + 
+           distribution['Remote Speaker Microphone']
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -148,45 +185,114 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {quoteItems.map((item) => (
+                          {quoteItems.map((item) => {
+                            const isExpanded = expandedItems.has(item.packageId)
+                            const hasHeadsets = item.headsetDistribution && item.walkieCount
+                            const expectedHeadsets = hasHeadsets ? (item.walkieCount || 0) : 0
+                            const totalHeadsets = hasHeadsets ? getTotalHeadsets(item.headsetDistribution!) : 0
+                            
+                            return (
                             <div
                               key={item.packageId}
-                              className="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200"
+                              className="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden"
                             >
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-gray-900">{item.packageName}</h4>
-                                <div className="flex items-center space-x-3 mt-1">
-                                  <span className="text-sm text-gray-600">
-                                    ${item.dailyRate}/day • ${item.weeklyRate}/week
-                                  </span>
+                              <div className="flex items-center justify-between p-4">
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-gray-900">{item.packageName}</h4>
+                                  <div className="flex items-center space-x-3 mt-1">
+                                    <span className="text-sm text-gray-600">
+                                      ${item.dailyRate}/day • ${item.weeklyRate}/week
+                                    </span>
+                                  </div>
+                                  {hasHeadsets && (
+                                    <div className="flex items-center gap-2 mt-2">
+                                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                                        {item.walkieCount} walkies
+                                      </span>
+                                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                        {totalHeadsets} headsets
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex items-center space-x-3">
+                                  <div className="flex items-center space-x-2">
+                                    <button
+                                      onClick={() => updateQuantity(item.packageId, item.quantity - 1)}
+                                      className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                    >
+                                      −
+                                    </button>
+                                    <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                                    <button
+                                      onClick={() => updateQuantity(item.packageId, item.quantity + 1)}
+                                      className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                  {hasHeadsets && (
+                                    <button
+                                      onClick={() => toggleExpanded(item.packageId)}
+                                      className="text-gray-600 hover:text-gray-900 p-2 hover:bg-gray-200 rounded transition-colors"
+                                      aria-label="Toggle headset details"
+                                    >
+                                      {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={() => removeFromQuote(item.packageId)}
+                                    className="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded transition-colors"
+                                    aria-label="Remove from quote"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
                                 </div>
                               </div>
-                              <div className="flex items-center space-x-3">
-                                <div className="flex items-center space-x-2">
-                                  <button
-                                    onClick={() => updateQuantity(item.packageId, item.quantity - 1)}
-                                    className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-                                  >
-                                    -
-                                  </button>
-                                  <span className="w-8 text-center font-semibold">{item.quantity}</span>
-                                  <button
-                                    onClick={() => updateQuantity(item.packageId, item.quantity + 1)}
-                                    className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-                                  >
-                                    +
-                                  </button>
+                              
+                              {/* Headset Distribution Editor */}
+                              {hasHeadsets && isExpanded && item.headsetDistribution && (
+                                <div className="px-4 pb-4 border-t border-gray-200 pt-4 bg-white">
+                                  <div className="flex items-center gap-2 mb-3">
+                                    <Headphones className="h-4 w-4 text-purple-600" />
+                                    <h5 className="text-sm font-semibold text-gray-900">Customize Headsets</h5>
+                                  </div>
+                                  <div className="space-y-2">
+                                    {HEADSET_TYPES.map(({ key, label }) => (
+                                      <div key={key} className="flex items-center justify-between">
+                                        <span className="text-xs text-gray-700">{label}</span>
+                                        <div className="flex items-center space-x-2">
+                                          <button
+                                            onClick={() => updateHeadsetCount(item.packageId, key, item.headsetDistribution![key] - 1)}
+                                            className="w-7 h-7 flex items-center justify-center bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 transition-colors text-sm"
+                                          >
+                                            −
+                                          </button>
+                                          <span className="w-8 text-center text-sm font-semibold">{item.headsetDistribution[key]}</span>
+                                          <button
+                                            onClick={() => updateHeadsetCount(item.packageId, key, item.headsetDistribution![key] + 1)}
+                                            className="w-7 h-7 flex items-center justify-center bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 transition-colors text-sm"
+                                          >
+                                            +
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div className={`mt-3 p-2 rounded text-xs text-center font-medium ${
+                                    totalHeadsets === expectedHeadsets 
+                                      ? 'bg-green-50 text-green-700' 
+                                      : totalHeadsets < expectedHeadsets
+                                      ? 'bg-yellow-50 text-yellow-700'
+                                      : 'bg-red-50 text-red-700'
+                                  }`}>
+                                    Total: {totalHeadsets} / {expectedHeadsets} headsets
+                                  </div>
                                 </div>
-                                <button
-                                  onClick={() => removeFromQuote(item.packageId)}
-                                  className="text-red-600 hover:text-red-700 p-2 hover:bg-red-50 rounded transition-colors"
-                                  aria-label="Remove from quote"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </div>
+                              )}
                             </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       )}
                     </div>

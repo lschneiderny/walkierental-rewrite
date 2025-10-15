@@ -2,119 +2,153 @@
 
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
-## Development Commands
+## Commands
 
-### Core Development
-- `npm run dev` - Start development server at http://localhost:3000
-- `npm run build` - Create production build
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
+### Development
+```pwsh
+npm run dev        # Start Next.js development server on http://localhost:3000
+npm run build      # Build production bundle
+npm start          # Start production server
+npm run lint       # Run ESLint to check code quality
+```
 
-### Testing and Quality
-This project currently doesn't have test configurations. When adding tests, consider:
-- Jest for unit testing
-- Playwright or Cypress for E2E testing
-- Testing components in isolation
+### Database (Prisma)
+```pwsh
+npx prisma generate                    # Generate Prisma Client after schema changes
+npx prisma migrate dev                 # Create and apply database migrations (dev)
+npx prisma migrate deploy              # Apply migrations (production)
+npx prisma db push                     # Push schema changes without migrations (dev only)
+npx prisma db seed                     # Seed database with initial data
+npx prisma studio                      # Open Prisma Studio GUI for database inspection
+```
+
+### Testing & Validation
+```pwsh
+npx prisma validate                    # Validate Prisma schema
+npm run lint                           # Run linter before committing
+```
 
 ## Architecture Overview
 
-### Technology Stack
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript with strict mode
-- **Styling**: Tailwind CSS v3 with custom primary colors (#2563eb)
+### Tech Stack
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Database**: SQLite (dev), Prisma ORM
+- **Styling**: Tailwind CSS
+- **Animation**: Framer Motion
 - **Icons**: Lucide React
-- **Deployment**: Static export ready
+- **Deployment**: Vercel
 
-### Application Structure
-This is a marketing website for walkie talkie rentals with a simple, clean architecture:
+### Database Models
 
-**Pages & Routing (App Router)**:
-- `/` (homepage) - Hero, features, popular packages, FAQ
-- `/packages` - Full rental package listings  
-- `/contact` - Contact form and quote requests
-- `/packages/[id]` - Individual package detail pages (implied by routing)
+The application uses two parallel systems:
 
-**Data Management**:
-- Static data in `data/packages.ts` with TypeScript interfaces
-- No external APIs or database connections
-- Package data includes pricing, specifications, and use cases
+**WalkiePackage System (New)**: Granular inventory tracking with individual items
+- `WalkiePackage`: Configurable rental packages (6, 8, 12, 16, 24, or 32 walkies)
+- `Walkie`: Individual walkie-talkie units (CP200 or CP200d models)
+- `Battery`: Individual batteries tracked separately
+- `Charger`: Charger units (1, 6, or 12 bank configurations)
+- `Headset`: Individual headsets (3 types: 2-Wire Surveillance, HMN9013B Lightweight, Remote Speaker Mic)
 
-**Component Architecture**:
-- `components/Header.tsx` - Fixed navigation with logo and CTA
-- `components/Footer.tsx` - Site footer
-- `components/Hero.tsx` - Homepage hero section with features and CTAs
-- Layout components use consistent styling patterns
+**Package System (Legacy)**: Backwards-compatible simplified packages
+- `Package`: Original package configuration
+- `InventoryItem`: Aggregated inventory items
 
-**Styling System**:
-- Custom Tailwind config with primary colors
-- CSS custom properties in `app/globals.css`
-- Consistent hover states and transitions
-- Mobile-first responsive design
+Both systems share the `Booking` model which supports either system via `packageId` or `walkiePackageId`.
 
-### Key Patterns
+### Directory Structure
 
-**Data Structure**: 
-The `Package` interface in `data/packages.ts` is the core data model:
-```typescript
-interface Package {
-  id: string;
-  name: string; 
-  description: string;
-  dailyRate: number;
-  weeklyRate: number;
-  includes: string[];
-  bestFor: string[];
-  specifications: {
-    range: string;
-    channels: number;
-    batteryLife: string;
-    accessories: string[];
-  };
-}
+```
+app/
+├── api/                    # API routes (Next.js 14 route handlers)
+│   ├── packages/route.ts   # Package CRUD operations
+│   ├── bookings/route.ts   # Booking management
+│   └── inventory/route.ts  # Inventory operations
+├── admin/                  # Admin dashboard pages
+│   └── inventory/page.tsx  # Inventory management UI
+├── packages/               # Package browsing pages
+│   └── page.tsx           # Package listing
+├── contact/               # Contact page
+├── layout.tsx             # Root layout with Header, Footer, QuoteProvider
+├── page.tsx               # Homepage with Hero, Features, FAQ
+└── globals.css            # Global styles and Tailwind
+
+components/                 # React components
+├── Header.tsx             # Site navigation
+├── Footer.tsx             # Site footer
+├── Hero.tsx               # Homepage hero section
+├── QuoteButton.tsx        # Floating quote button
+└── QuoteModal.tsx         # Quote request modal
+
+contexts/
+└── QuoteContext.tsx       # Shopping cart-like quote state management
+
+lib/
+├── prisma.ts              # Prisma client singleton
+├── types.ts               # TypeScript type definitions
+└── quote-types.ts         # Quote-specific types
+
+prisma/
+├── schema.prisma          # Database schema
+└── seed.ts                # Database seeding script
 ```
 
-**Component Patterns**:
-- Consistent use of Lucide React icons
-- Tailwind utility classes with custom primary colors
-- Link components for navigation between pages
-- Grid layouts for responsive design
+### Key Architectural Patterns
 
-**Path Aliases**: 
-The project uses `@/*` aliases mapping to the root directory for cleaner imports.
+**API Routes**: All API routes follow Next.js 14 App Router conventions with `route.ts` files. They use the Prisma client for database access and return `NextResponse` objects.
 
-## Development Workflow
+**Client-Side State**: The `QuoteContext` provides global state for the quote/cart functionality, wrapping the entire application in `layout.tsx`.
 
-### File Organization
-- New components go in `components/` directory
-- Page components use App Router in `app/` directory  
-- Static data and types in `data/` directory
-- Global styles in `app/globals.css`
+**Data Transformation**: API routes transform Prisma models into frontend-compatible types. JSON fields (like `includes`, `bestFor`, `accessories`) are parsed in API routes before sending to the client.
 
-### Styling Guidelines
-- Use the defined primary colors: `primary` (#2563eb) and `primary-hover` (#1d4ed8)
-- Follow mobile-first responsive patterns established in existing components
-- Maintain consistent spacing and typography scales
-- Use Lucide React icons for consistency
+**Prisma Patterns**: 
+- Singleton pattern for Prisma client to prevent multiple instances in development
+- Dev environment uses SQLite with `file:./dev.db`
+- Production can use PostgreSQL (Vercel Postgres recommended)
 
-### Content Management
-- Package data is managed in `data/packages.ts`
-- The `popularPackages` export shows the first 3 packages on homepage
-- All content is static and embedded in components
-- Update company information in Header and Footer components
+**Styling Approach**:
+- Utility-first with Tailwind CSS
+- Custom gradients and animations defined in `globals.css`
+- Framer Motion for scroll-triggered animations (viewport-aware with `once: true`)
+- Performance optimizations: `will-change-transform`, memoized schema data
 
-### Adding New Features
-- Follow the established TypeScript patterns with proper interfaces
-- Use the existing responsive grid layouts
-- Maintain the professional blue color scheme
-- Ensure mobile responsiveness matches existing patterns
+### Environment Configuration
 
-## Business Context
+Required environment variables (see `.env.example`):
+- `DATABASE_URL`: Database connection string
+- `NODE_ENV`: Environment (development/production)
 
-This is a walkie talkie rental business website featuring:
-- 6 rental packages targeting different use cases (events, construction, hospitality, etc.)
-- Pricing structure with daily and weekly rates
-- Professional-grade equipment focus
-- Nationwide shipping model
-- Customer support and technical assistance
+Optional:
+- `NEXT_PUBLIC_APP_URL`: Application URL
+- `NEXT_PUBLIC_CONTACT_EMAIL`: Contact email
+- `NEXT_PUBLIC_PHONE`: Contact phone
 
-The site serves as a marketing tool and lead generator, directing users to contact forms or package detail pages for quotes and bookings.
+### Database Seeding
+
+The seed script (`prisma/seed.ts`) populates:
+1. WalkiePackage configurations (6 standard sizes)
+2. Legacy Package data for backwards compatibility
+
+Run seeding with: `npx prisma db seed`
+
+### Import Aliases
+
+The project uses `@/*` path aliases (configured in `tsconfig.json`):
+- `@/components/*` → `components/*`
+- `@/lib/*` → `lib/*`
+- `@/contexts/*` → `contexts/*`
+- `@/app/*` → `app/*`
+
+### Deployment Considerations
+
+The `vercel.json` configuration:
+- Runs `prisma generate` before build
+- Sets API function timeouts to 10s with 1024MB memory
+- Configures font caching for performance
+- Targets `iad1` region (US East)
+
+For production deployment:
+1. Set up production database (Vercel Postgres recommended)
+2. Configure `DATABASE_URL` environment variable
+3. Deploy to Vercel (auto-detects Next.js)
+4. Run migrations: `npx prisma migrate deploy`

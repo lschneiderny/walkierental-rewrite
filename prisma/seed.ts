@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { walkiePackages } from '../data/walkie-packages'
 
 const prisma = new PrismaClient()
 
@@ -155,13 +156,18 @@ async function main() {
   await prisma.booking.deleteMany()
   await prisma.inventoryItem.deleteMany()
   await prisma.package.deleteMany()
+  await prisma.walkiePackage.deleteMany()
+  await prisma.walkie.deleteMany()
+  await prisma.battery.deleteMany()
+  await prisma.charger.deleteMany()
+  await prisma.headset.deleteMany()
   
-  // Create packages
+  // Create legacy packages (for backwards compatibility)
   for (const pkg of packagesData) {
     const createdPackage = await prisma.package.create({
       data: pkg,
     })
-    console.log(`Created package: ${createdPackage.name}`)
+    console.log(`Created legacy package: ${createdPackage.name}`)
     
     // Create inventory items for each package (5 units per package)
     for (let i = 1; i <= 5; i++) {
@@ -174,10 +180,106 @@ async function main() {
         },
       })
     }
-    console.log(`Created 5 inventory items for ${createdPackage.name}`)
+  }
+
+  // Create walkie packages
+  console.log('\nCreating walkie packages...')
+  for (const pkgData of walkiePackages) {
+    const createdPackage = await prisma.walkiePackage.create({
+      data: {
+        ...pkgData,
+        headsetDistribution: JSON.stringify(pkgData.headsetDistribution),
+      },
+    })
+    console.log(`Created ${createdPackage.name}`)
+  }
+
+  // Create sample walkies inventory
+  console.log('\nCreating sample walkies inventory...')
+  const walkieModels = ['Motorola CP200', 'Motorola CP200d']
+  let walkieCount = 0
+  
+  // Create enough walkies to cover the largest package (32) with some spares
+  for (let i = 1; i <= 40; i++) {
+    const model = walkieModels[i % 2]
+    await prisma.walkie.create({
+      data: {
+        model,
+        serialNumber: `W-${String(i).padStart(4, '0')}`,
+        status: 'available',
+        condition: 'excellent',
+      },
+    })
+    walkieCount++
+  }
+  console.log(`Created ${walkieCount} walkies`)
+
+  // Create batteries (2 per walkie + spares)
+  console.log('\nCreating batteries...')
+  let batteryCount = 0
+  for (let i = 1; i <= 90; i++) {
+    await prisma.battery.create({
+      data: {
+        model: 'Motorola CP200 LiOn Battery',
+        serialNumber: `BAT-${String(i).padStart(4, '0')}`,
+        status: 'available',
+        condition: 'excellent',
+      },
+    })
+    batteryCount++
+  }
+  console.log(`Created ${batteryCount} batteries`)
+
+  // Create chargers
+  console.log('\nCreating chargers...')
+  const chargerData = [
+    { model: 'CP200D 6-Bank Charger', count: 3, bankCount: 6 },
+    { model: 'CP200D 12-Bank Charger', count: 2, bankCount: 12 },
+    { model: 'CP200D Single-Bank Charger', count: 5, bankCount: 1 },
+  ]
+  
+  let chargerNum = 1
+  for (const charger of chargerData) {
+    for (let i = 1; i <= charger.count; i++) {
+      await prisma.charger.create({
+        data: {
+          model: charger.model,
+          serialNumber: `CHG-${String(chargerNum).padStart(4, '0')}`,
+          bankCount: charger.bankCount,
+          status: 'available',
+          condition: 'excellent',
+        },
+      })
+      chargerNum++
+    }
+    console.log(`Created ${charger.count} ${charger.model}s`)
+  }
+
+  // Create headsets
+  console.log('\nCreating headsets...')
+  const headsetTypes = [
+    { type: '2-Wire Surveillance Kit', count: 50 },
+    { type: 'HMN9013B Lightweight Headset', count: 10 },
+    { type: 'Remote Speaker Microphone', count: 10 },
+  ]
+  
+  let headsetNum = 1
+  for (const headset of headsetTypes) {
+    for (let i = 1; i <= headset.count; i++) {
+      await prisma.headset.create({
+        data: {
+          type: headset.type as any,
+          serialNumber: `HS-${String(headsetNum).padStart(4, '0')}`,
+          status: 'available',
+          condition: 'excellent',
+        },
+      })
+      headsetNum++
+    }
+    console.log(`Created ${headset.count} ${headset.type} headsets`)
   }
   
-  console.log('Seeding finished.')
+  console.log('\nSeeding finished.')
 }
 
 main()
