@@ -8,6 +8,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { Package } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'
 import { fadeInUp, staggerContainer, scaleIn, scrollViewport, staggerTransition } from '@/lib/animations'
+import { CheckCircle } from 'lucide-react'
 
 export default function Home() {
   const [packages, setPackages] = useState<Package[]>([])
@@ -93,20 +94,119 @@ export default function Home() {
       
       <div>
         {/* Hero Section */}
-        <Hero />
+        <Hero>
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                Professional
+                <span className="gradient-text block">
+                  Production Comms
+                </span>
+                Rental
+              </h1>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* How it Works Section */}
-        <section className="py-16 border-t border-gray-200">
-          <motion.h2 
-            className="text-3xl font-bold text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={scrollViewport}
-            variants={fadeInUp}
-          >
-            How it works
-          </motion.h2>
+              <p className="mt-6 text-xl text-gray-600 leading-relaxed">
+              Crystal-clear communication for film, TV, and live event productions. 
+              Broadcast-quality equipment with nationwide delivery and 24/7 production support.
+              </p>
+
+              {/* Features */}
+              <motion.div
+                className="mt-8 space-y-3"
+                initial="hidden"
+                animate="visible"
+                variants={staggerContainer}
+                transition={{ ...staggerTransition, delayChildren: 0.3 }}
+              >
+              {[
+                'Broadcast-grade Motorola equipment',
+                'Pre-programmed & production-ready',
+                '24/7 on-set technical support',
+                'Same-day shipping available'
+                ].map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    className="flex items-center space-x-3"
+                    variants={fadeInUp}
+                  >
+                    <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* CTA Buttons */}
+              <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/packages"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-primary-hover text-white font-semibold rounded-lg transition-all duration-300 group shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                  View Production Packages
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center px-8 py-4 border-2 border-gray-300 hover:border-primary bg-white text-gray-700 hover:text-primary font-semibold rounded-lg transition-all duration-300 hover:shadow-lg"
+                >
+                  Request Production Quote
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Right Content - Image Placeholder */}
+            <motion.div
+              className="lg:pl-8 self-start"
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+            >
+              <div className="relative">
+                <div className="aspect-[4/3] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center shadow-soft-lg transition-transform duration-300 hover:scale-[1.02]">
+                <div className="text-center">
+                  <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-12 h-12 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6.5 2C5.67 2 5 2.67 5 3.5v17c0 .83.67 1.5 1.5 1.5h11c.83 0 1.5-.67 1.5-1.5v-17c0-.83-.67-1.5-1.5-1.5h-11zm11 2v16h-11V4h11z"/>
+                      <path d="M8 6h8v1H8V6zm0 2h8v1H8V8zm0 2h8v1H8v-1zm0 2h8v1H8v-1z"/>
+                    </svg>
+                  </div>
+                    <p className="text-gray-500 text-sm">Professional Walkie Talkie</p>
+                  </div>
+                </div>
+
+                {/* Floating Stats */}
+                <div className="absolute -bottom-6 -left-6 bg-white rounded-lg shadow-soft-lg p-4 border border-gray-100 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                  <div className="text-2xl font-bold gradient-text">1000+</div>
+                  <div className="text-sm text-gray-600">Productions Supported</div>
+                </div>
+
+                <div className="absolute -top-6 -right-6 bg-white rounded-lg shadow-soft-lg p-4 border border-gray-100 transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                  <div className="text-2xl font-bold gradient-text">24/7</div>
+                  <div className="text-sm text-gray-600">On-Set Support</div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </Hero>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* How it Works Section */}
+          <section className="py-16 border-t border-gray-200">
+            <motion.div 
+              className="text-center mb-12"
+              initial="hidden"
+              whileInView="visible"
+              viewport={scrollViewport}
+              variants={fadeInUp}
+            >
+              <h2 className="text-3xl font-bold mb-4">How it works</h2>
+              <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                Welcome to WalkieRentals, your trusted partner for production communication equipment.
+              </p>
+            </motion.div>
           <motion.div 
             className="grid grid-cols-1 md:grid-cols-4 gap-8"
             initial="hidden"
@@ -153,37 +253,37 @@ export default function Home() {
                 </p>
               </motion.div>
             ))}
-          </motion.div>
-        </section>
+            </motion.div>
+          </section>
 
-        {/* Popular Packages Section */}
-        <section className="py-16">
-          <motion.div 
-            className="flex items-center justify-between mb-8"
+          {/* Popular Packages Section */}
+          <section className="py-16">
+            <motion.div
+              className="flex items-center justify-between mb-8"
             initial="hidden"
             whileInView="visible"
             viewport={scrollViewport}
             variants={fadeInUp}
-          >
-            <h2 className="text-3xl font-bold">Production Packages</h2>
-            <Link 
-              href="/packages" 
-              className="inline-flex items-center text-primary hover:text-primary-hover transition-colors group"
             >
-              View all production packages
-              <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
-          
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              <h2 className="text-3xl font-bold">Production Packages</h2>
+              <Link
+                href="/packages"
+                className="inline-flex items-center text-primary hover:text-primary-hover transition-colors group"
+              >
+                View all production packages
+                <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
+
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={scrollViewport}
             variants={staggerContainer}
             transition={staggerTransition}
-          >
-            {loading ? (
+            >
+              {loading ? (
               // Loading skeleton
               [1, 2, 3].map((i) => (
                 <div key={i} className="bg-white border border-gray-200 rounded-xl p-6 animate-pulse">
@@ -193,53 +293,55 @@ export default function Home() {
                   <div className="h-8 bg-gray-200 rounded"></div>
                 </div>
               ))
-            ) : (
-              packages.map((pkg) => (
-              <motion.div 
-                key={pkg.id} 
-                className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-soft-lg will-change-transform"
-                variants={fadeInUp}
-              >
-                <div className="mb-4">
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{pkg.name}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{pkg.description}</p>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-bold gradient-text">${pkg.dailyRate}</span>
-                    <span className="text-sm text-gray-500">/ day</span>
-                    <span className="text-sm text-gray-400">•</span>
-                    <span className="text-sm text-gray-500">${pkg.weeklyRate} / week</span>
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <h4 className="font-medium text-sm text-gray-900 mb-2">Includes:</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {pkg.includes.slice(0, 3).map((item, index) => (
-                      <li key={index} className="flex items-center">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-                        {item}
-                      </li>
-                    ))}
-                    {pkg.includes.length > 3 && (
-                      <li className="text-gray-400">+ {pkg.includes.length - 3} more items</li>
-                    )}
-                  </ul>
-                </div>
-                
-                <div className="mb-6">
-                  <h4 className="font-medium text-sm text-gray-900 mb-2">Best for:</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {pkg.bestFor.slice(0, 2).map((use, index) => (
-                      <span 
-                        key={index} 
-                        className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full"
-                      >
-                        {use}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                
+              ) : (
+                packages.map((pkg) => (
+                  <motion.div
+                    key={pkg.id}
+                    className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-soft-lg will-change-transform"
+                    variants={fadeInUp}
+                  >
+                    <div className="mb-4">
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        {pkg.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-3">{pkg.description}</p>
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-2xl font-bold gradient-text">${pkg.dailyRate}</span>
+                        <span className="text-sm text-gray-500">/ day</span>
+                        <span className="text-sm text-gray-400">•</span>
+                        <span className="text-sm text-gray-500">${pkg.weeklyRate} / week</span>
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <h4 className="font-medium text-sm text-gray-900 mb-2">Includes:</h4>
+                      <ul className="text-sm text-gray-600 space-y-1">
+                        {pkg.includes.slice(0, 3).map((item, index) => (
+                          <li key={index} className="flex items-center">
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
+                            {item}
+                          </li>
+                        ))}
+                        {pkg.includes.length > 3 && (
+                          <li className="text-gray-400">+ {pkg.includes.length - 3} more items</li>
+                        )}
+                      </ul>
+                    </div>
+
+                    <div className="mb-6">
+                      <h4 className="font-medium text-sm text-gray-900 mb-2">Best for:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {pkg.bestFor.slice(0, 2).map((use, index) => (
+                          <span
+                            key={index}
+                            className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full"
+                          >
+                            {use}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
                     <div className="flex gap-2">
                       <button
                         onClick={() => addToQuote(pkg)}
@@ -257,152 +359,103 @@ export default function Home() {
                         Details
                       </Link>
                     </div>
-              </motion.div>
-            ))
-            )}
-          </motion.div>
-        </section>
+                  </motion.div>
+                ))
+              )}
+            </motion.div>
+          </section>
 
-        {/* Features Section */}
-        <section className="py-16 border-t border-gray-200">
-          <motion.h2 
-            className="text-3xl font-bold text-center mb-12"
+          {/* Features Section */}
+          <section className="py-16 border-t border-gray-200">
+            <motion.h2
+              className="text-3xl font-bold text-center mb-12"
+              initial="hidden"
+              whileInView="visible"
+              viewport={scrollViewport}
+              variants={fadeInUp}
+            >
+              Why Production Teams Trust Us
+            </motion.h2>
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={scrollViewport}
-            variants={fadeInUp}
-          >
-            Why Production Teams Trust Us
-          </motion.h2>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={scrollViewport}
-            variants={staggerContainer}
-            transition={staggerTransition}
-          >
-            {[
-              {
-                icon: <Truck className="h-8 w-8" />,
-                title: "Fast Delivery",
-                description: "Same-day shipping available. Equipment arrives production-ready and pre-programmed to your specs."
-              },
-              {
-                icon: <Shield className="h-8 w-8" />,
-                title: "Broadcast Quality",
-                description: "Motorola MOTOTRBO digital radios with noise cancellation for crystal-clear on-set communication."
-              },
-              {
-                icon: <Clock className="h-8 w-8" />,
-                title: "Flexible Periods",
-                description: "Daily, weekly, and monthly rentals. Easy extensions if your production runs long."
-              },
-              {
-                icon: <Phone className="h-8 w-8" />,
-                title: "24/7 Tech Support",
-                description: "Real production professionals on call around the clock. We understand set life."
-              }
-            ].map((feature, index) => (
-              <motion.div 
-                key={index} 
-                className="text-center group"
-                variants={scaleIn}
-              >
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 text-primary rounded-full mx-auto mb-4 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">
-                  {feature.icon}
+              variants={staggerContainer}
+              transition={staggerTransition}
+            >
+              {[
+                {
+                  icon: <Truck className="h-8 w-8" />,
+                  title: "Fast Delivery",
+                  description:
+                    "Same-day shipping available. Equipment arrives production-ready and pre-programmed to your specs.",
+                },
+                {
+                  icon: <Shield className="h-8 w-8" />,
+                  title: "Broadcast Quality",
+                  description:
+                    "Motorola MOTOTRBO digital radios with noise cancellation for crystal-clear on-set communication.",
+                },
+                {
+                  icon: <Clock className="h-8 w-8" />,
+                  title: "Flexible Periods",
+                  description:
+                    "Daily, weekly, and monthly rentals. Easy extensions if your production runs long.",
+                },
+                {
+                  icon: <Phone className="h-8 w-8" />,
+                  title: "24/7 Tech Support",
+                  description:
+                    "Real production professionals on call around the clock. We understand set life.",
+                },
+              ].map((feature, index) => (
+                <motion.div key={index} className="text-center group" variants={scaleIn}>
+                  <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-50 text-primary rounded-full mx-auto mb-4 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">
+                    {feature.icon}
+                  </div>
+                  <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </section>
+
+          {/* CTA Section */}
+          <section className="py-16 border-t border-gray-200">
+            <motion.div
+              className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-12 text-white text-center overflow-hidden shadow-soft-lg"
+              initial="hidden"
+              whileInView="visible"
+              viewport={scrollViewport}
+              variants={scaleIn}
+            >
+              <div className="relative z-10">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready for your next production?</h2>
+                <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                  Get production-ready comms delivered fast. Same-day shipping available for urgent shoots.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link
+                    href="/packages"
+                    className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
+                  >
+                    View Production Packages
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl"
+                  >
+                    Request Production Quote
+                  </Link>
                 </div>
-                <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-sm text-gray-600">{feature.description}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-16 border-t border-gray-200">
-          <motion.h2 
-            className="text-3xl font-bold text-center mb-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={scrollViewport}
-            variants={fadeInUp}
-          >
-            Frequently Asked Questions
-          </motion.h2>
-          <motion.div 
-            className="max-w-3xl mx-auto space-y-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={scrollViewport}
-            variants={staggerContainer}
-            transition={staggerTransition}
-          >
-            {[
-              {
-                question: "Do you offer same-day delivery for last-minute productions?",
-                answer: "Yes! We offer same-day shipping on orders placed before 2pm EST. Equipment arrives pre-programmed and production-ready."
-              },
-              {
-                question: "Are the radios pre-programmed for our production?",
-                answer: "Absolutely. We pre-program all radios to your channel specifications and test them before shipping. They work out of the box."
-              },
-              {
-                question: "What if we need to extend during a long shoot?",
-                answer: "No problem. Contact our 24/7 support line and we'll extend your rental immediately. We understand production schedules change."
-              },
-              {
-                question: "Do you provide technical support during production?",
-                answer: "Yes. Our team of production communications experts is available 24/7 via phone. We've worked on hundreds of sets and know the challenges."
-              }
-            ].map((faq, index) => (
-              <motion.div 
-                key={index} 
-                className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-lg p-6 hover:shadow-soft transition-shadow duration-300 border border-gray-100"
-                variants={fadeInUp}
-              >
-                <h3 className="font-semibold mb-3">{faq.question}</h3>
-                <p className="text-gray-600">{faq.answer}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-16 border-t border-gray-200">
-          <motion.div 
-            className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 text-white text-center overflow-hidden shadow-soft-lg"
-            initial="hidden"
-            whileInView="visible"
-            viewport={scrollViewport}
-            variants={scaleIn}
-          >
-            <div className="relative z-10">
-              <h2 className="text-3xl font-bold mb-4">
-                Ready for your next production?
-              </h2>
-              <p className="text-xl opacity-90 mb-8">
-                Get production-ready comms delivered fast. Same-day shipping available for urgent shoots.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link 
-                  href="/packages"
-                  className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
-                >
-                  View Production Packages
-                </Link>
-                <Link 
-                  href="/contact"
-                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl"
-                >
-                  Request Production Quote
-                </Link>
               </div>
-            </div>
-          </motion.div>
-        </section>
+            </motion.div>
+          </section>
+        </div>
       </div>
-    </div>
     </>
   )
 }

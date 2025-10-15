@@ -12,14 +12,19 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
     font-family: var(--font-inter);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     letter-spacing: -0.025em;
     line-height: 1.2;
   }
@@ -111,7 +116,8 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
     }
     50% {
@@ -180,7 +186,7 @@
   }
 
   .gradient-border::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
@@ -218,6 +224,7 @@
 
   /* Focus visible styles for better accessibility */
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-white;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
+      focus:ring-offset-white;
   }
 }

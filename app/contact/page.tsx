@@ -1,10 +1,11 @@
 'use client'
 
-import { Phone, Mail, MessageSquare, Clock, CheckCircle, Send, ArrowRight } from 'lucide-react'
+import { Phone, Mail, MessageSquare, Clock, CheckCircle, Send, ArrowRight, Plug } from 'lucide-react'
 import { motion } from "motion/react"
 import { fadeInUp, staggerContainer, scaleIn, slideInRight, scrollViewport, staggerTransition } from '@/lib/animations'
 import { useState } from 'react'
-import AnimatedBanner from '@/components/AnimatedBanner'
+import StickyBanner from '@/components/StickyBanner'
+import Hero from '@/components/Hero'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -21,47 +22,33 @@ export default function ContactPage() {
 
   return (
     <div>
-      {/* Hero Section with Gradient Overlay */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        {/* Background Image with Gradient Overlay */}
-        <div className="absolute inset-0 z-0">
-          {/* Placeholder for background image */}
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/80 via-purple-600/80 to-blue-600/80" />
-          <div className="absolute inset-0 bg-gray-900/20" />
-        </div>
+      <StickyBanner
+        message="Need a more specific quote? Talk to the walkie rental experts at GothamSound.com"
+        linkText="Visit GothamSound"
+        linkUrl="https://gothamsound.com"
+        backgroundColor="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"
+        textColor="text-white"
+        dismissible={true}
+        className=""
+      />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div 
-            className="text-center text-white"
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-          >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Get in Touch
-            </h1>
-            <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
-              Ready to elevate your production communication? Let&apos;s talk.
-            </p>
-          </motion.div>
+      <Hero>
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+            Contact Us
+          </h1>
+          <p className="mt-6 text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
+            Get in touch with us for any questions or inquiries.
+          </p>
         </div>
-        </section>
-
-        {/* Animated Banner */}
-        <AnimatedBanner 
-          message="Need a more specific quote? Talk to the walkie rental experts at GothamSound.com"
-          linkText="Visit GothamSound"
-          linkUrl="https://gothamsound.com"
-          backgroundColor="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500"
-          className="shadow-lg"
-        />
+      </Hero>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Contact Cards & Form Section */}
-        <section className="py-16 -mt-16 relative z-20">
+        <section className="py-16">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Side - Contact Cards */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-1 space-y-6"
               initial="hidden"
               whileInView="visible"
@@ -70,7 +57,7 @@ export default function ContactPage() {
               transition={staggerTransition}
             >
               {/* Phone Card */}
-              <motion.a 
+              <motion.a
                 href="tel:5551234567"
                 className="block bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
                 variants={scaleIn}
@@ -88,7 +75,7 @@ export default function ContactPage() {
               </motion.a>
 
               {/* Email Card */}
-              <motion.a 
+              <motion.a
                 href="mailto:info@walkierentals.com"
                 className="block bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
                 variants={scaleIn}
@@ -106,7 +93,7 @@ export default function ContactPage() {
               </motion.a>
 
               {/* Stats Card */}
-              <motion.div 
+              <motion.div
                 className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-soft"
                 variants={scaleIn}
               >
@@ -137,7 +124,7 @@ export default function ContactPage() {
             </motion.div>
 
             {/* Right Side - Contact Form */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-2"
               initial="hidden"
               whileInView="visible"
@@ -146,8 +133,11 @@ export default function ContactPage() {
             >
               <div className="bg-white rounded-2xl shadow-soft-lg p-8 border border-gray-100">
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Send us a message</h2>
-                <p className="text-gray-600 mb-8">Fill out the form below and we&apos;ll get back to you within 2 hours during business hours.</p>
-                
+                <p className="text-gray-600 mb-8">
+                  Fill out the form below and we&apos;ll get back to you within 2 hours during business
+                  hours.
+                </p>
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
