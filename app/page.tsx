@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Hero from '@/components/Hero'
 import { Truck, Shield, Clock, Phone, ArrowRight, ShoppingCart } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion } from "motion/react"
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { Package } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'

@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { walkiePackages } from '../data/walkie-packages'
 
 const prisma = new PrismaClient()
 
@@ -184,6 +183,57 @@ async function main() {
 
   // Create walkie packages
   console.log('\nCreating walkie packages...')
+  const walkiePackages = [
+    {
+      id: "crew-4",
+      name: "Crew of 4",
+      description: "Perfect for small production crews",
+      walkieCount: 4,
+      batteriesPerWalkie: 2,
+      headsetsPerWalkie: 1,
+      dailyRate: 120,
+      weeklyRate: 600,
+      popular: false,
+      headsetDistribution: {
+        "2-Wire Surveillance Kit": 4,
+        "HMN9013B Lightweight Headset": 0,
+        "Remote Speaker Microphone": 0
+      }
+    },
+    {
+      id: "crew-8",
+      name: "Crew of 8",
+      description: "Ideal for medium-sized productions",
+      walkieCount: 8,
+      batteriesPerWalkie: 2,
+      headsetsPerWalkie: 1,
+      dailyRate: 200,
+      weeklyRate: 1000,
+      popular: true,
+      headsetDistribution: {
+        "2-Wire Surveillance Kit": 6,
+        "HMN9013B Lightweight Headset": 2,
+        "Remote Speaker Microphone": 0
+      }
+    },
+    {
+      id: "crew-16",
+      name: "Crew of 16",
+      description: "Great for large production crews",
+      walkieCount: 16,
+      batteriesPerWalkie: 2,
+      headsetsPerWalkie: 1,
+      dailyRate: 320,
+      weeklyRate: 1600,
+      popular: true,
+      headsetDistribution: {
+        "2-Wire Surveillance Kit": 12,
+        "HMN9013B Lightweight Headset": 2,
+        "Remote Speaker Microphone": 2
+      }
+    }
+  ]
+  
   for (const pkgData of walkiePackages) {
     const createdPackage = await prisma.walkiePackage.create({
       data: {

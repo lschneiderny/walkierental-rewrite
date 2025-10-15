@@ -14,11 +14,13 @@ datasource db {
 model WalkiePackage {
   id                    String   @id @default(cuid())
   name                  String   // e.g., "6 Walkie Package"
+  description           String?  // Optional description
   walkieCount           Int      // 6, 8, 12, 16, 24, or 32
   batteriesPerWalkie    Int      @default(2)
   headsetsPerWalkie     Int      @default(1)
   dailyRate             Float
   weeklyRate            Float
+  popular               Boolean  @default(false)
   isActive              Boolean  @default(true)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt

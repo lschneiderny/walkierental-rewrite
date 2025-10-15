@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from "motion/react"
 import { ShoppingCart } from 'lucide-react'
 import { useQuote } from '@/contexts/QuoteContext'
 import { useState } from 'react'

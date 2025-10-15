@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, CheckCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion } from "motion/react"
 
 export default function Hero() {
   return (

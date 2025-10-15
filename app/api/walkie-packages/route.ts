@@ -16,11 +16,13 @@ export async function GET() {
     const transformedPackages = walkiePackages.map((pkg) => ({
       id: pkg.id,
       name: pkg.name,
+      description: pkg.description,
       walkieCount: pkg.walkieCount,
       batteriesPerWalkie: pkg.batteriesPerWalkie,
       headsetsPerWalkie: pkg.headsetsPerWalkie,
       dailyRate: pkg.dailyRate,
       weeklyRate: pkg.weeklyRate,
+      popular: pkg.popular,
       headsetDistribution: JSON.parse(pkg.headsetDistribution),
       isActive: pkg.isActive,
       createdAt: pkg.createdAt,

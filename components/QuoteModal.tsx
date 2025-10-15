@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from "motion/react"
 import { X, Trash2, Send, Package as PackageIcon, Headphones, ChevronDown, ChevronUp } from 'lucide-react'
 import { useQuote } from '@/contexts/QuoteContext'
 import { HeadsetDistribution } from '@/lib/quote-types'
@@ -159,7 +159,7 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
                       </svg>
                     </motion.div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2">Quote Request Sent!</h3>
-                    <p className="text-gray-600">We'll get back to you within 2 hours with a detailed quote.</p>
+                    <p className="text-gray-600">We&apos;ll get back to you within 2 hours with a detailed quote.</p>
                   </div>
                 ) : (
                   <div className="p-6 space-y-6">
@@ -268,7 +268,7 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
                                           >
                                             −
                                           </button>
-                                          <span className="w-8 text-center text-sm font-semibold">{item.headsetDistribution[key]}</span>
+                                          <span className="w-8 text-center text-sm font-semibold">{item.headsetDistribution![key]}</span>
                                           <button
                                             onClick={() => updateHeadsetCount(item.packageId, key, item.headsetDistribution![key] + 1)}
                                             className="w-7 h-7 flex items-center justify-center bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 transition-colors text-sm"

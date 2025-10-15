@@ -64,11 +64,13 @@ export interface HeadsetDistribution {
 export interface WalkiePackage {
   id: string;
   name: string;
-  walkieCount: 6 | 8 | 12 | 16 | 24 | 32;
+  description?: string;
+  walkieCount: 4 | 6 | 8 | 12 | 16 | 24 | 32;
   batteriesPerWalkie: number;
   headsetsPerWalkie: number;
   dailyRate: number;
   weeklyRate: number;
+  popular?: boolean;
   headsetDistribution: HeadsetDistribution;
   isActive: boolean;
   createdAt: Date;
@@ -77,7 +79,7 @@ export interface WalkiePackage {
 
 export interface WalkiePackageInput {
   name: string;
-  walkieCount: 6 | 8 | 12 | 16 | 24 | 32;
+  walkieCount: 4 | 6 | 8 | 12 | 16 | 24 | 32;
   dailyRate: number;
   weeklyRate: number;
   headsetDistribution?: HeadsetDistribution;

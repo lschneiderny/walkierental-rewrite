@@ -1,8 +1,8 @@
 "use client";
 
 import Link from 'next/link'
-import { Radio, Signal, Battery, Users, ShoppingCart, Headphones } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Radio, Battery, Users, ShoppingCart, Headphones } from 'lucide-react'
+import { motion } from "motion/react"
 import { useEffect, useState, useMemo } from 'react'
 import { WalkiePackage } from '@/lib/types'
 import { HeadsetDistribution } from '@/lib/quote-types'
@@ -218,7 +218,12 @@ export default function PackagesPage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors duration-200">{pkg.name}</h3>
-                    <p className="text-gray-600">Complete turnkey production package</p>
+                    <p className="text-gray-600">{pkg.description || 'Complete turnkey production package'}</p>
+                    {pkg.popular && (
+                      <span className="inline-block bg-primary text-white text-xs px-2 py-1 rounded-full mt-2">
+                        Most Popular
+                      </span>
+                    )}
                   </div>
                   <div className="text-right">
                     <div className="text-3xl font-bold gradient-text">${pkg.dailyRate}</div>
@@ -347,7 +352,7 @@ export default function PackagesPage() {
         >
           <h2 className="text-2xl font-bold mb-4">Need a custom production package?</h2>
           <p className="text-gray-600 mb-6">
-            Large crew or unique production requirements? We'll create a custom comms package tailored to your shoot.
+            Large crew or unique production requirements? We&apos;ll create a custom comms package tailored to your shoot.
           </p>
           <Link 
             href="/contact"

@@ -1,8 +1,7 @@
 'use client'
 
 import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight } from 'lucide-react'
-import { motion } from 'framer-motion'
-
+import { motion } from "motion/react"
 // Animation variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
@@ -40,7 +39,7 @@ export default function ContactPage() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Let's Talk About Your
+              Let&apos;s Talk About Your
               <span className="gradient-text block">Production Needs</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
@@ -220,7 +219,7 @@ export default function ContactPage() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <p className="text-gray-600 mb-6">
-              Have more questions? We're here to help!
+              Have more questions? We&apos;re here to help!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
