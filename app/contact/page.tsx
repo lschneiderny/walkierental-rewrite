@@ -213,7 +213,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* FAQ Section */}
+        {/* FAQ Section **ADD EXPANSION FOR FREQUENTLY ASKED QUESTIONS** */}
         <section className="py-16 border-t border-gray-200">
           <motion.div
             initial="hidden"
@@ -265,38 +265,10 @@ export default function ContactPage() {
               </motion.div>
             ))}
           </motion.div>
-
-          <motion.div 
-            className="text-center"
-            initial="hidden"
-            whileInView="visible"
-            viewport={scrollViewport}
-            variants={fadeInUp}
-          >
-            <p className="text-gray-600 mb-6">
-              Have more questions? We&apos;re here to help!
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="tel:5551234567"
-                className="inline-flex items-center justify-center bg-primary hover:bg-primary-hover text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
-              >
-                <Phone className="mr-2 h-5 w-5" />
-                Call Us Now
-              </a>
-              <a 
-                href="mailto:info@walkierentals.com"
-                className="inline-flex items-center justify-center border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300"
-              >
-                <Mail className="mr-2 h-5 w-5" />
-                Email Support
-              </a>
-            </div>
-          </motion.div>
         </section>
-
+        {/* use sections for line breaks */}
         {/* Final CTA Section */}
-        <section className="py-16">
+        <section className="pb-16">
           <motion.div 
             className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-12 text-white text-center overflow-hidden shadow-soft-lg"
             initial="hidden"

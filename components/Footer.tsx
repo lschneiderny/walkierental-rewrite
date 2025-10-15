@@ -23,34 +23,6 @@ export default function Footer() {
               Broadcast-grade Motorola radios with experienced technical support.
             </p>
             
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-white mb-3 sr-only">Contact Information</h3>
-              <a 
-                href="tel:5551234567" 
-                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
-                aria-label="Call us at (555) 123-4567"
-              >
-                <Phone className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
-                <span>(555) 123-4567</span>
-              </a>
-              <a 
-                href="mailto:info@walkierentals.com" 
-                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
-                aria-label="Email us at info@walkierentals.com"
-              >
-                <Mail className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
-                <span>info@walkierentals.com</span>
-              </a>
-              <div className="flex items-center space-x-2 text-sm text-gray-400">
-                <MapPin className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                <span>Nationwide Shipping</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-400">
-                <Clock className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-                <span>Technical Support Available</span>
-              </div>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -123,19 +95,46 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wider">Support</h3>
             <ul className="space-y-3" role="list">
+            <li> 
+              <a 
+                href="mailto:info@walkierentals.com" 
+                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                aria-label="Email us at info@walkierentals.com"
+              >
+                <Mail className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
+                <span>info@walkierentals.com</span>
+              </a>
+              </li>
+              <li>
+              <li>  
+              <a 
+                href="tel:5551234567" 
+                className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                aria-label="Call us at (555) 123-4567"
+              >
+                <Phone className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
+                <span>(555) 123-4567</span>
+              </a>
+              </li>
+              </li>
+              
+              <li className="pt-8">
+              </li>
               <li>
                 <span className="text-sm text-gray-400 block">
                   <strong className="text-white">Hours:</strong><br />
                   Mon-Fri: 8am-6pm EST<br />
-                  Sat: 9am-3pm EST
                 </span>
               </li>
-              <li className="pt-2">
-              </li>
+              
             </ul>
           </div>
         </div>
-
+        <div>
+              <h3 className="text-sm font-semibold text-white mb-3 sr-only">Contact Information</h3>
+              
+              
+              </div>
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-10 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
