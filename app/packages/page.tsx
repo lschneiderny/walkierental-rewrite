@@ -64,11 +64,26 @@ export default function PackagesPage() {
   }, [])
   
   const updateHeadsetCount = (packageId: string, headsetType: keyof HeadsetDistribution, value: number) => {
+    const pkg = packages.find(p => p.id === packageId)
+    if (!pkg) return
+    
+    const currentDistribution = headsetSelections[packageId]
+    if (!currentDistribution) return
+    
+    // Calculate current total excluding the type we're updating
+    const currentTotalExcludingType = Object.entries(currentDistribution)
+      .filter(([key]) => key !== headsetType)
+      .reduce((sum, [, count]) => sum + count, 0)
+    
+    const maxHeadsets = pkg.walkieCount
+    const maxForThisType = maxHeadsets - currentTotalExcludingType
+    const clampedValue = Math.max(0, Math.min(maxForThisType, value))
+    
     setHeadsetSelections(prev => ({
       ...prev,
       [packageId]: {
         ...prev[packageId],
-        [headsetType]: Math.max(0, value)
+        [headsetType]: clampedValue
       }
     }))
   }
@@ -241,7 +256,13 @@ export default function PackagesPage() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">Customize Your Headsets:</h4>
                   <div className="space-y-3">
-                    {HEADSET_TYPES.map(({ key, label, shortLabel }) => (
+                    {HEADSET_TYPES.map(({ key, label, shortLabel }) => {
+                      const currentValue = distribution?.[key] || 0
+                      const currentTotal = getTotalHeadsets(pkg.id)
+                      const remainingSlots = expectedHeadsets - currentTotal
+                      const maxForThisType = currentValue + remainingSlots
+                      
+                      return (
                       <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                         <span className="text-sm font-medium text-gray-700">
                           <span className="hidden sm:inline">{label}</span>
@@ -249,21 +270,34 @@ export default function PackagesPage() {
                         </span>
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => updateHeadsetCount(pkg.id, key, (distribution?.[key] || 0) - 1)}
-                            className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
+                            onClick={() => updateHeadsetCount(pkg.id, key, currentValue - 1)}
+                            disabled={currentValue === 0}
+                            className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             −
                           </button>
-                          <span className="w-10 text-center font-semibold text-gray-900">{distribution?.[key] || 0}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            max={maxForThisType}
+                            value={currentValue}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value) || 0
+                              updateHeadsetCount(pkg.id, key, value)
+                            }}
+                            className="w-14 text-center font-semibold text-gray-900 border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
                           <button
-                            onClick={() => updateHeadsetCount(pkg.id, key, (distribution?.[key] || 0) + 1)}
-                            className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold"
+                            onClick={() => updateHeadsetCount(pkg.id, key, currentValue + 1)}
+                            disabled={currentValue >= maxForThisType}
+                            className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             +
                           </button>
                         </div>
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
                   
                   {/* Headset Total Indicator */}
