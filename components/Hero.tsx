@@ -2,7 +2,7 @@
 
 export default function Hero({ children }: { children: React.ReactNode }) {
   return (
-    <section className="relative pt-20 pb-24 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
+    <section className="relative pt-24 pb-24 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
       {/* Static background elements - removed animations for better performance */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30" />

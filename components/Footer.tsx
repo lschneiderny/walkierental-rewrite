@@ -105,19 +105,16 @@ export default function Footer() {
                 <span>info@walkierentals.com</span>
               </a>
               </li>
-              <li>
               <li>  
               <a 
-                href="tel:5551234567" 
+                href="tel:2125555555" 
                 className="flex items-center space-x-2 text-sm text-gray-400 hover:text-white transition-colors group focus:outline-none focus:ring-2 focus:ring-primary rounded"
-                aria-label="Call us at (555) 123-4567"
+                aria-label="Call us at (212) 555-5555"
               >
                 <Phone className="h-4 w-4 flex-shrink-0 group-hover:text-primary transition-colors" aria-hidden="true" />
-                <span>(555) 123-4567</span>
+                <span>(212) 555-5555</span>
               </a>
-              </li>
-              </li>
-              
+              </li>              
               <li className="pt-8">
               </li>
               <li>
