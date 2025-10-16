@@ -108,7 +108,7 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/50 z-[100] backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -116,36 +116,34 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
           />
 
           {/* Modal */}
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none overflow-y-auto">
             <motion.div
-              className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden pointer-events-auto"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              className="pointer-events-auto w-full max-w-4xl my-8"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             >
+            <div
+              className="bg-white rounded-2xl shadow-2xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+            >
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 flex items-center justify-between">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center space-x-3">
-                  <PackageIcon className="h-6 w-6" />
-                  <h2 className="text-2xl font-bold">Request Quote</h2>
+                  <PackageIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <h2 className="text-xl sm:text-2xl font-bold">Request Quote</h2>
                 </div>
                 <button
                   onClick={onClose}
                   className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
                   aria-label="Close modal"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <div className="overflow-y-auto flex-1">
                 {submitSuccess ? (
                   <div className="p-8 text-center">
                     <motion.div
@@ -467,8 +465,9 @@ export default function QuoteModal({ isOpen, onClose }: QuoteModalProps) {
                   </div>
                 )}
               </div>
+            </div>
             </motion.div>
-          </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
