@@ -5,10 +5,6 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Start seeding...')
 
-  // Clear existing data
-  await prisma.booking.deleteMany()
-  await prisma.walkiePackage.deleteMany()
-
   // Create walkie packages - only 6, 8, 12, 16, 24, 32 sizes
   // Each walkie includes 2 batteries and 1 headset
   // Default headset distribution (users can customize in quotes)
