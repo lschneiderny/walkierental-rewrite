@@ -79,21 +79,12 @@ export default function Header({ onOpenModal }: HeaderProps) {
 
           {/* CTA Button */}
           <div className="flex items-center space-x-4">
-            {totalItems >= 0 ? (
-              <Link
-              href="/packages"
-              className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-              aria-label="Get a quote for walkie talkie rentals"
-            >
-              Get Quote
-            </Link>
-              
-            ) : (
+            {totalItems > 0 ? (
               <div>
                 
                 <motion.button
                   onClick={onOpenModal}
-                  className="fixed bottom-6 right-6 bg-primary hover:bg-primary-hover text-white rounded-full p-4 shadow-2xl hover:shadow-3xl transition-all duration-300 z-40 flex items-center space-x-2 group"
+                  className="bg-primary hover:bg-primary-hover text-white rounded-full px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 group font-medium"
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   whileHover={{ scale: 1.05 }}
@@ -103,7 +94,7 @@ export default function Header({ onOpenModal }: HeaderProps) {
                   }`}
                 >
                   <div className="relative">
-                    <ShoppingCart className="h-6 w-6" />
+                    <ShoppingCart className="h-5 w-5" />
                     <motion.span
                       className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
                       initial={{ scale: 0 }}
@@ -113,12 +104,18 @@ export default function Header({ onOpenModal }: HeaderProps) {
                       {totalItems}
                     </motion.span>
                   </div>
-                  <span className="hidden sm:block font-semibold pr-2">
-                    View Quote
-                  </span>
+                  <span>View Quote</span>
                 </motion.button>
 
               </div>
+            ) : (
+              <Link
+                href="/packages"
+                className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg transition-all duration-300 font-medium hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                aria-label="Get a quote for walkie talkie rentals"
+              >
+                Get Quote
+              </Link>
             )}
           </div>
         </div>
