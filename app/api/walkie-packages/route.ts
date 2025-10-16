@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { HeadsetDistribution } from '@/lib/types'
 
+export const runtime = 'nodejs'
+export const revalidate = 60 // Cache for 1 minute
+
 export async function GET() {
   try {
     const packages = await prisma.walkiePackage.findMany({
