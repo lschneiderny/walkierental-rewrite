@@ -1,8 +1,8 @@
-import { Package, PackageWithAvailability } from './types'
+import { WalkiePackage } from './types'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
-export async function getPackages(): Promise<Package[]> {
+export async function getPackages(): Promise<WalkiePackage[]> {
   const res = await fetch(`${API_BASE_URL}/api/packages`, {
     next: { revalidate: 60 }, // Cache for 60 seconds
   })
@@ -14,7 +14,7 @@ export async function getPackages(): Promise<Package[]> {
   return res.json()
 }
 
-export async function getPackage(id: string): Promise<PackageWithAvailability> {
+export async function getPackage(id: string): Promise<WalkiePackage> {
   const res = await fetch(`${API_BASE_URL}/api/packages/${id}`, {
     next: { revalidate: 30 }, // Cache for 30 seconds
   })

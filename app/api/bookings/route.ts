@@ -5,18 +5,6 @@ export async function GET() {
   try {
     const bookings = await prisma.booking.findMany({
       include: {
-        package: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        inventoryItem: {
-          select: {
-            id: true,
-            serialNumber: true,
-          },
-        },
       },
       orderBy: { createdAt: 'desc' },
     })
@@ -35,55 +23,26 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const {
-      packageId,
+      walkiePackageId,
       customerName,
       customerEmail,
       customerPhone,
       startDate,
       endDate,
       notes,
+      customHeadsetDistribution,
     } = body
 
-    if (!packageId || !customerName || !customerEmail || !startDate || !endDate) {
+    if (!walkiePackageId || !customerName || !customerEmail || !startDate || !endDate) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // Find an available inventory item
-    const availableItem = await prisma.inventoryItem.findFirst({
-      where: {
-        packageId,
-        status: 'available',
-        bookings: {
-          none: {
-            status: {
-              in: ['pending', 'confirmed', 'active'],
-            },
-            OR: [
-              {
-                AND: [
-                  { startDate: { lte: new Date(endDate) } },
-                  { endDate: { gte: new Date(startDate) } },
-                ],
-              },
-            ],
-          },
-        },
-      },
-    })
-
-    if (!availableItem) {
-      return NextResponse.json(
-        { error: 'No inventory available for the selected dates' },
-        { status: 400 }
-      )
-    }
-
     // Get package to calculate cost
-    const packageData = await prisma.package.findUnique({
-      where: { id: packageId },
+    const packageData = await prisma.walkiePackage.findUnique({
+      where: { id: walkiePackageId },
     })
 
     if (!packageData) {
@@ -98,12 +57,11 @@ export async function POST(request: Request) {
       (new Date(endDate).getTime() - new Date(startDate).getTime()) /
         (1000 * 60 * 60 * 24)
     )
-    const totalCost = days * packageData.dailyRate
+    const totalCost = days >= 7 ? Math.ceil(days / 7) * packageData.weeklyRate : days * packageData.dailyRate
 
     const booking = await prisma.booking.create({
       data: {
-        packageId,
-        inventoryItemId: availableItem.id,
+        walkiePackageId,
         customerName,
         customerEmail,
         customerPhone,
@@ -112,10 +70,10 @@ export async function POST(request: Request) {
         totalCost,
         status: 'pending',
         notes,
+        customHeadsetDistribution,
       },
       include: {
-        package: true,
-        inventoryItem: true,
+        walkiePackage: true,
       },
     })
 

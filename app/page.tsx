@@ -5,24 +5,23 @@ import Hero from '@/components/Hero'
 import { Truck, Shield, Clock, Phone, ArrowRight, ShoppingCart } from 'lucide-react'
 import { motion } from "motion/react"
 import { useEffect, useState, useMemo } from 'react'
-import { Package } from '@/lib/types'
+import { WalkiePackage } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'
 import { fadeInUp, staggerContainer, scaleIn, scrollViewport, staggerTransition } from '@/lib/animations'
 import { CheckCircle } from 'lucide-react'
 
 export default function Home() {
-  const [packages, setPackages] = useState<Package[]>([])
+  const [packages, setPackages] = useState<WalkiePackage[]>([])
   const [loading, setLoading] = useState(true)
   const { addToQuote } = useQuote()
 
   useEffect(() => {
     async function fetchPackages() {
       try {
-        const res = await fetch('/api/packages', {
-          next: { revalidate: 60 }
-        })
-        const data = await res.json()
-        setPackages(data.slice(0, 3))
+        const response = await fetch('/api/walkie-packages')
+        if (!response.ok) throw new Error('Failed to fetch packages')
+        const data = await response.json()
+        setPackages(data)
       } catch (error) {
         console.error('Error fetching packages:', error)
       } finally {
@@ -42,7 +41,7 @@ export default function Home() {
     "description": "Professional production communication equipment rental for film, TV, and live event productions. Production-ready equipment with knowlagable technical support.",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+1-555-123-4567",
+      "telephone": "+1-212-555-5555",
       "contactType": "Customer Service",
       "email": "info@walkierentals.com",
       "availableLanguage": "English"
@@ -300,7 +299,7 @@ export default function Home() {
                       <div className="h-8 bg-gray-200 rounded"></div>
                     </div>
                   ))
-                : packages.map((pkg) => (
+                : packages.slice(0, 3).map((pkg) => (
                     <motion.div
                       key={pkg.id}
                       className="group bg-white border border-gray-200 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:shadow-soft-lg will-change-transform"
@@ -311,7 +310,7 @@ export default function Home() {
                           {pkg.name}
                         </h3>
                         <p className="text-gray-600 text-sm mb-3">
-                          {pkg.description}
+                          {pkg.description || `Complete package with ${pkg.walkieCount} walkies`}
                         </p>
                         <div className="flex items-baseline space-x-2">
                           <span className="text-2xl font-bold gradient-text">
@@ -330,34 +329,27 @@ export default function Home() {
                           Includes:
                         </h4>
                         <ul className="text-sm text-gray-600 space-y-1">
-                          {pkg.includes.slice(0, 3).map((item, index) => (
-                            <li key={index} className="flex items-center">
-                              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
-                              {item}
-                            </li>
-                          ))}
-                          {pkg.includes.length > 3 && (
-                            <li className="text-gray-400">
-                              + {pkg.includes.length - 3} more items
-                            </li>
-                          )}
+                          <li className="flex items-center">
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
+                            {pkg.walkieCount} Walkie Talkies
+                          </li>
+                          <li className="flex items-center">
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
+                            {pkg.walkieCount * pkg.batteriesPerWalkie} Batteries
+                          </li>
+                          <li className="flex items-center">
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
+                            {pkg.walkieCount * pkg.headsetsPerWalkie} Headsets
+                          </li>
                         </ul>
                       </div>
 
                       <div className="mb-6">
-                        <h4 className="font-medium text-sm text-gray-900 mb-2">
-                          Best for:
-                        </h4>
-                        <div className="flex flex-wrap gap-1">
-                          {pkg.bestFor.slice(0, 2).map((use, index) => (
-                            <span
-                              key={index}
-                              className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full"
-                            >
-                              {use}
-                            </span>
-                          ))}
-                        </div>
+                        {pkg.popular && (
+                          <span className="inline-block bg-primary text-white text-xs px-3 py-1 rounded-full">
+                            Most Popular
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex gap-2">

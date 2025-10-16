@@ -1,10 +1,7 @@
 // Quote-related type definitions
+import { HeadsetDistribution } from './types'
 
-export interface HeadsetDistribution {
-  '2-Wire Surveillance Kit': number;
-  'HMN9013B Lightweight Headset': number;
-  'Remote Speaker Microphone': number;
-}
+export type { HeadsetDistribution }
 
 export interface QuoteItem {
   packageId: string;

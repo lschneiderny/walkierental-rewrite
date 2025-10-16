@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { HeadsetDistribution } from '@/lib/types'
 
 export async function GET() {
   try {
-    const walkiePackages = await prisma.walkiePackage.findMany({
+    const packages = await prisma.walkiePackage.findMany({
       where: {
         isActive: true,
       },
@@ -12,21 +13,10 @@ export async function GET() {
       },
     })
 
-    // Transform the data to include parsed headset distribution
-    const transformedPackages = walkiePackages.map((pkg) => ({
-      id: pkg.id,
-      name: pkg.name,
-      description: pkg.description,
-      walkieCount: pkg.walkieCount,
-      batteriesPerWalkie: pkg.batteriesPerWalkie,
-      headsetsPerWalkie: pkg.headsetsPerWalkie,
-      dailyRate: pkg.dailyRate,
-      weeklyRate: pkg.weeklyRate,
-      popular: pkg.popular,
-      headsetDistribution: JSON.parse(pkg.headsetDistribution),
-      isActive: pkg.isActive,
-      createdAt: pkg.createdAt,
-      updatedAt: pkg.updatedAt,
+    // Transform the data to match the WalkiePackage type
+    const transformedPackages = packages.map((pkg) => ({
+      ...pkg,
+      headsetDistribution: JSON.parse(pkg.headsetDistribution) as HeadsetDistribution,
     }))
 
     return NextResponse.json(transformedPackages)

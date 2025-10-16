@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "motion/react"
 import { X, Trash2, Send, Package as PackageIcon, Headphones, ChevronDown, ChevronUp } from 'lucide-react'
 import { useQuote } from '@/contexts/QuoteContext'
-import { HeadsetDistribution } from '@/lib/quote-types'
+import { type HeadsetDistribution } from '@/lib/quote-types'
 import { useState } from 'react'
 
 interface QuoteModalProps {

@@ -1,6 +1,6 @@
 'use client'
 
-import { Phone, Mail, MessageSquare, Clock, CheckCircle, Send, ArrowRight, Plug } from 'lucide-react'
+import { Phone, Mail, Send, ArrowRight } from 'lucide-react'
 import { motion } from "motion/react"
 import { fadeInUp, staggerContainer, scaleIn, slideInRight, scrollViewport, staggerTransition } from '@/lib/animations'
 import { useState } from 'react'

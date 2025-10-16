@@ -1,12 +1,12 @@
 'use client'
 
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react'
-import { Package, WalkiePackage } from '@/lib/types'
-import { QuoteItem, HeadsetDistribution } from '@/lib/quote-types'
+import { WalkiePackage, HeadsetDistribution } from '@/lib/types'
+import { QuoteItem } from '@/lib/quote-types'
 
 interface QuoteContextType {
   quoteItems: QuoteItem[]
-  addToQuote: (pkg: Package | WalkiePackage, quantity?: number) => void
+  addToQuote: (pkg: WalkiePackage, quantity?: number) => void
   removeFromQuote: (packageId: string) => void
   updateQuantity: (packageId: string, quantity: number) => void
   updateHeadsetDistribution: (packageId: string, distribution: HeadsetDistribution) => void
@@ -19,34 +19,34 @@ const QuoteContext = createContext<QuoteContextType | undefined>(undefined)
 export function QuoteProvider({ children }: { children: ReactNode }) {
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([])
 
-  const addToQuote = useCallback((pkg: Package | WalkiePackage, quantity: number = 1) => {
-    setQuoteItems(prev => {
-      const existingIndex = prev.findIndex(item => item.packageId === pkg.id)
-      
+  const addToQuote = useCallback((pkg: WalkiePackage, quantity: number = 1) => {
+    setQuoteItems((prev) => {
+      const existingIndex = prev.findIndex((item) => item.packageId === pkg.id)
+
       if (existingIndex >= 0) {
         // Update quantity if item already exists
         const updated = [...prev]
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + quantity
+          quantity: updated[existingIndex].quantity + quantity,
         }
         return updated
       }
-      
-      // Check if this is a WalkiePackage
-      const isWalkiePackage = 'walkieCount' in pkg
-      
+
       // Add new item
-      return [...prev, {
-        packageId: pkg.id,
-        packageName: pkg.name,
-        walkieCount: isWalkiePackage ? pkg.walkieCount : undefined,
-        batteriesPerWalkie: isWalkiePackage ? pkg.batteriesPerWalkie : undefined,
-        dailyRate: pkg.dailyRate,
-        weeklyRate: pkg.weeklyRate,
-        quantity,
-        headsetDistribution: isWalkiePackage ? pkg.headsetDistribution : undefined
-      }]
+      return [
+        ...prev,
+        {
+          packageId: pkg.id,
+          packageName: pkg.name,
+          walkieCount: pkg.walkieCount,
+          batteriesPerWalkie: pkg.batteriesPerWalkie,
+          dailyRate: pkg.dailyRate,
+          weeklyRate: pkg.weeklyRate,
+          quantity,
+          headsetDistribution: pkg.headsetDistribution,
+        },
+      ]
     })
   }, [])
 

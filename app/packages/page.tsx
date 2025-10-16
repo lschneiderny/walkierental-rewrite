@@ -1,26 +1,25 @@
-"use client";
+"use client"
 
 import Link from 'next/link'
 import { Radio, Battery, Users, ShoppingCart, Headphones } from 'lucide-react'
 import { motion } from "motion/react"
 import { useEffect, useState, useMemo } from 'react'
-import { WalkiePackage } from '@/lib/types'
-import { HeadsetDistribution } from '@/lib/quote-types'
+import { WalkiePackage, HeadsetDistribution } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'
 import { scaleIn, scrollViewport } from '@/lib/animations'
 import Hero from '@/components/Hero'
 
 const HEADSET_TYPES = [
   { key: '2-Wire Surveillance Kit' as const, label: '2-Wire Surveillance', shortLabel: '2-Wire' },
-  { key: 'HMN9013B Lightweight Headset' as const, label: 'HMN9013B Lightweight', shortLabel: 'Lightweight' },
-  { key: 'Remote Speaker Microphone' as const, label: 'Remote Speaker Mic', shortLabel: 'Speaker Mic' },
+  { key: 'HMN9013B Lightweight Headset' as const, label: 'HMN9013B Lightweight', shortLabel: 'Madonna' },
+  { key: 'Remote Speaker Microphone' as const, label: 'Remote Speaker Mic', shortLabel: 'Hand Mic' },
 ]
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState<WalkiePackage[]>([])
   const [loading, setLoading] = useState(true)
   const { addToQuote } = useQuote()
-  
+
   // Track headset distributions for each package
   const [headsetSelections, setHeadsetSelections] = useState<Record<string, HeadsetDistribution>>({})
 
@@ -28,16 +27,16 @@ export default function PackagesPage() {
     async function fetchPackages() {
       try {
         const res = await fetch('/api/walkie-packages', {
-          cache: 'no-store'
+          cache: 'no-store',
         })
-        
+
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        
+
         const data = await res.json()
         setPackages(data)
-        
+
         // Initialize headset selections with default distributions
         const initialSelections: Record<string, HeadsetDistribution> = {}
         data.forEach((pkg: WalkiePackage) => {
@@ -52,46 +51,56 @@ export default function PackagesPage() {
     }
     fetchPackages()
   }, [])
-  
-  const updateHeadsetCount = (packageId: string, headsetType: keyof HeadsetDistribution, value: number) => {
-    const pkg = packages.find(p => p.id === packageId)
+
+  const updateHeadsetCount = (
+    packageId: string,
+    headsetType: keyof HeadsetDistribution,
+    value: number
+  ) => {
+    const pkg = packages.find((p) => p.id === packageId)
     if (!pkg) return
-    
+
     const currentDistribution = headsetSelections[packageId]
     if (!currentDistribution) return
-    
+
     // Calculate current total excluding the type we're updating
     const currentTotalExcludingType = Object.entries(currentDistribution)
       .filter(([key]) => key !== headsetType)
       .reduce((sum, [, count]) => sum + count, 0)
-    
+
     const maxHeadsets = pkg.walkieCount
     const maxForThisType = maxHeadsets - currentTotalExcludingType
     const clampedValue = Math.max(0, Math.min(maxForThisType, value))
-    
-    setHeadsetSelections(prev => ({
+
+    setHeadsetSelections((prev) => ({
       ...prev,
       [packageId]: {
         ...prev[packageId],
-        [headsetType]: clampedValue
-      }
+        [headsetType]: clampedValue,
+      },
     }))
   }
-  
+
   const getTotalHeadsets = (packageId: string) => {
     const dist = headsetSelections[packageId]
     if (!dist) return 0
-    return dist['2-Wire Surveillance Kit'] + dist['HMN9013B Lightweight Headset'] + dist['Remote Speaker Microphone']
+    return (
+      dist['2-Wire Surveillance Kit'] +
+      dist['HMN9013B Lightweight Headset'] +
+      dist['Remote Speaker Microphone']
+    )
   }
-  
+
   const handleAddToQuote = (pkg: WalkiePackage) => {
     const customPkg = {
       ...pkg,
-      headsetDistribution: headsetSelections[pkg.id] || pkg.headsetDistribution
+      headsetDistribution: headsetSelections[pkg.id] || pkg.headsetDistribution,
     }
     addToQuote(customPkg)
   }
-  
+
+
+
   // Memoize structured data - only recalculate when packages change
   const packagesSchema = useMemo(() => ({
     "@context": "https://schema.org",
@@ -138,20 +147,20 @@ export default function PackagesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(packagesSchema) }}
       />
+
       <Hero>
         <motion.div
-          className="text-center mb-16"
+          className="text-center"
           initial="hidden"
           animate="visible"
           variants={scaleIn}
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-            Turnkey Walkie Talkie Rental Packages
+            Production Communication Packages
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Complete production communication packages for film, TV, and live
-            events. Each walkie includes 2 batteries and 1 headset. Customize
-            your headset selection below.
+            Complete walkie talkie rental packages for film, TV, and live events. Each walkie
+            includes 2 batteries and 1 headset. Customize your headset types below.
           </p>
         </motion.div>
       </Hero>
@@ -202,11 +211,10 @@ export default function PackagesPage() {
               </div>
             ) : (
               packages.map((pkg) => {
-                const distribution = headsetSelections[pkg.id];
-                const totalHeadsets = getTotalHeadsets(pkg.id);
-                const totalBatteries = pkg.walkieCount * pkg.batteriesPerWalkie;
-                const expectedHeadsets =
-                  pkg.walkieCount * pkg.headsetsPerWalkie;
+                const distribution = headsetSelections[pkg.id]
+                const totalHeadsets = getTotalHeadsets(pkg.id)
+                const totalBatteries = pkg.walkieCount * pkg.batteriesPerWalkie
+                const expectedHeadsets = pkg.walkieCount * pkg.headsetsPerWalkie
 
                 return (
                   <div
@@ -285,12 +293,10 @@ export default function PackagesPage() {
                         </h4>
                         <div className="space-y-3">
                           {HEADSET_TYPES.map(({ key, label, shortLabel }) => {
-                            const currentValue = distribution?.[key] || 0;
-                            const currentTotal = getTotalHeadsets(pkg.id);
-                            const remainingSlots =
-                              expectedHeadsets - currentTotal;
-                            const maxForThisType =
-                              currentValue + remainingSlots;
+                            const currentValue = distribution?.[key] || 0
+                            const currentTotal = getTotalHeadsets(pkg.id)
+                            const remainingSlots = expectedHeadsets - currentTotal
+                            const maxForThisType = currentValue + remainingSlots
 
                             return (
                               <div
@@ -298,21 +304,13 @@ export default function PackagesPage() {
                                 className="flex items-center justify-between bg-gray-50 rounded-lg p-3"
                               >
                                 <span className="text-sm font-medium text-gray-700">
-                                  <span className="hidden sm:inline">
-                                    {label}
-                                  </span>
-                                  <span className="sm:hidden">
-                                    {shortLabel}
-                                  </span>
+                                  <span className="hidden sm:inline">{label}</span>
+                                  <span className="sm:hidden">{shortLabel}</span>
                                 </span>
                                 <div className="flex items-center space-x-2">
                                   <button
                                     onClick={() =>
-                                      updateHeadsetCount(
-                                        pkg.id,
-                                        key,
-                                        currentValue - 1
-                                      )
+                                      updateHeadsetCount(pkg.id, key, currentValue - 1)
                                     }
                                     disabled={currentValue === 0}
                                     className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
@@ -325,19 +323,14 @@ export default function PackagesPage() {
                                     max={maxForThisType}
                                     value={currentValue}
                                     onChange={(e) => {
-                                      const value =
-                                        parseInt(e.target.value) || 0;
-                                      updateHeadsetCount(pkg.id, key, value);
+                                      const value = parseInt(e.target.value) || 0
+                                      updateHeadsetCount(pkg.id, key, value)
                                     }}
                                     className="w-14 text-center font-semibold text-gray-900 border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                   />
                                   <button
                                     onClick={() =>
-                                      updateHeadsetCount(
-                                        pkg.id,
-                                        key,
-                                        currentValue + 1
-                                      )
+                                      updateHeadsetCount(pkg.id, key, currentValue + 1)
                                     }
                                     disabled={currentValue >= maxForThisType}
                                     className="w-8 h-8 flex items-center justify-center bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors text-gray-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
@@ -346,7 +339,7 @@ export default function PackagesPage() {
                                   </button>
                                 </div>
                               </div>
-                            );
+                            )
                           })}
                         </div>
 
@@ -354,18 +347,18 @@ export default function PackagesPage() {
                         <div
                           className={`mt-3 p-3 rounded-lg text-sm text-center font-medium ${
                             totalHeadsets === expectedHeadsets
-                              ? "bg-green-50 text-green-700 border border-green-200"
+                              ? 'bg-green-50 text-green-700 border border-green-200'
                               : totalHeadsets < expectedHeadsets
-                              ? "bg-yellow-50 text-yellow-700 border border-yellow-200"
-                              : "bg-red-50 text-red-700 border border-red-200"
+                              ? 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+                              : 'bg-red-50 text-red-700 border border-red-200'
                           }`}
                         >
                           Total: {totalHeadsets} / {expectedHeadsets} headsets
                           {totalHeadsets !== expectedHeadsets && (
                             <span className="ml-2">
                               {totalHeadsets < expectedHeadsets
-                                ? "(Add more)"
-                                : "(Too many)"}
+                                ? '(Add more)'
+                                : '(Too many)'}
                             </span>
                           )}
                         </div>
@@ -385,12 +378,36 @@ export default function PackagesPage() {
                       </button>
                     </div>
                   </div>
-                );
+                )
               })
             )}
           </div>
+
+          {/* Bottom CTA */}
+          <motion.div
+            className="text-center py-16 border-t border-gray-200"
+            initial="hidden"
+            whileInView="visible"
+            viewport={scrollViewport}
+            variants={scaleIn}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Need a custom production package?
+            </h2>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Large crew or unique production requirements? We&apos;ll create a custom
+              comms package tailored to your shoot.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center bg-primary hover:bg-primary-hover text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:shadow-xl hover:scale-105"
+            >
+              <Users className="mr-2 h-5 w-5" />
+              Get Custom Quote
+            </Link>
+          </motion.div>
         </div>
       </div>
     </>
-  );
+  )
 }

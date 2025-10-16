@@ -1,150 +1,59 @@
 // Type definitions for the application
 
-// Inventory Item Types
-export type ItemStatus = 'available' | 'rented' | 'maintenance' | 'retired';
-export type ItemCondition = 'excellent' | 'good' | 'fair' | 'poor';
+// Headset Types - based on items.md
+export type HeadsetType =
+  | '2-Wire Surveillance Kit' // Also called surveillance headset
+  | 'HMN9013B Lightweight Headset' // Also called Madonna headset
+  | 'Remote Speaker Microphone' // Also called hand mic
 
-export interface Walkie {
-  id: string;
-  model: 'Motorola CP200' | 'Motorola CP200d';
-  serialNumber: string;
-  status: ItemStatus;
-  condition: ItemCondition;
-  lastServiced?: Date;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Battery {
-  id: string;
-  model: string;
-  serialNumber: string;
-  status: ItemStatus;
-  condition: ItemCondition;
-  lastServiced?: Date;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Charger {
-  id: string;
-  model: 'CP200D 6-Bank Charger' | 'CP200D 12-Bank Charger' | 'CP200D Single-Bank Charger';
-  serialNumber: string;
-  bankCount: 1 | 6 | 12;
-  status: ItemStatus;
-  condition: ItemCondition;
-  lastServiced?: Date;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export type HeadsetType = '2-Wire Surveillance Kit' | 'HMN9013B Lightweight Headset' | 'Remote Speaker Microphone';
-
-export interface Headset {
-  id: string;
-  type: HeadsetType;
-  serialNumber: string;
-  status: ItemStatus;
-  condition: ItemCondition;
-  lastServiced?: Date;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
+// Headset distribution for a package
 export interface HeadsetDistribution {
-  '2-Wire Surveillance Kit': number;
-  'HMN9013B Lightweight Headset': number;
-  'Remote Speaker Microphone': number;
+  '2-Wire Surveillance Kit': number
+  'HMN9013B Lightweight Headset': number
+  'Remote Speaker Microphone': number
 }
 
+// Package configuration - fixed sizes: 6, 8, 12, 16, 24, 32 walkies
 export interface WalkiePackage {
-  id: string;
-  name: string;
-  description?: string;
-  walkieCount: 4 | 6 | 8 | 12 | 16 | 24 | 32;
-  batteriesPerWalkie: number;
-  headsetsPerWalkie: number;
-  dailyRate: number;
-  weeklyRate: number;
-  popular?: boolean;
-  headsetDistribution: HeadsetDistribution;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  name: string
+  description?: string
+  walkieCount: 6 | 8 | 12 | 16 | 24 | 32 // Only these sizes
+  batteriesPerWalkie: 2 // Always 2 batteries per walkie
+  headsetsPerWalkie: 1 // Always 1 headset per walkie
+  dailyRate: number
+  weeklyRate: number
+  popular?: boolean
+  headsetDistribution: HeadsetDistribution // User can customize this
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface WalkiePackageInput {
-  name: string;
-  walkieCount: 4 | 6 | 8 | 12 | 16 | 24 | 32;
-  dailyRate: number;
-  weeklyRate: number;
-  headsetDistribution?: HeadsetDistribution;
+  name: string
+  walkieCount: 6 | 8 | 12 | 16 | 24 | 32
+  dailyRate: number
+  weeklyRate: number
+  headsetDistribution?: HeadsetDistribution
 }
 
-// Legacy types for backwards compatibility
-export interface Package {
-  id: string;
-  name: string;
-  description: string;
-  dailyRate: number;
-  weeklyRate: number;
-  includes: string[];
-  bestFor: string[];
-  specifications: {
-    range: string;
-    channels: number;
-    batteryLife: string;
-    accessories: string[];
-  };
-  isActive?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
 
-export interface InventoryItem {
-  id: string;
-  packageId: string;
-  serialNumber: string;
-  status: ItemStatus;
-  condition: ItemCondition;
-  lastServiced?: Date;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
+// Booking for walkie package rentals
 export interface Booking {
-  id: string;
-  packageId?: string;
-  walkiePackageId?: string;
-  inventoryItemId?: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone?: string;
-  startDate: Date;
-  endDate: Date;
-  status: 'pending' | 'confirmed' | 'active' | 'completed' | 'cancelled';
-  totalCost: number;
-  notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface PackageWithAvailability extends Package {
-  availableCount: number;
-  totalCount: number;
-}
-
-export interface WalkiePackageWithAvailability extends WalkiePackage {
-  availableWalkies: number;
-  totalWalkies: number;
-  availableBatteries: number;
-  totalBatteries: number;
-  availableHeadsets: number;
-  totalHeadsets: number;
+  id: string
+  walkiePackageId: string
+  customerName: string
+  customerEmail: string
+  customerPhone?: string
+  startDate: Date
+  endDate: Date
+  status: 'pending' | 'confirmed' | 'active' | 'completed' | 'cancelled'
+  totalCost: number
+  notes?: string
+  // Custom headset distribution for this booking (user can modify from package default)
+  customHeadsetDistribution?: HeadsetDistribution
+  createdAt: Date
+  updatedAt: Date
 }
 
