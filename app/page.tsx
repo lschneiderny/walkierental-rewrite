@@ -87,10 +87,10 @@ export default async function Home() {
 
       <div>
         <HomeHero />
-        <HomeContent />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <PackageList packages={transformedPackages} />
-        </div>
+        <HomeContent>
+          <PackageList packages={transformedPackages} />    
+        </HomeContent>
+        
       </div>
     </>
   )

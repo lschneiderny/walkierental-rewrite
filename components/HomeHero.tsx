@@ -4,13 +4,18 @@ import Link from 'next/link'
 import Hero from '@/components/Hero'
 import { ArrowRight, CheckCircle } from 'lucide-react'
 import { motion } from "motion/react"
-import { fadeInUp, staggerContainer, staggerTransition } from '@/lib/animations'
+import { fadeInUp, staggerContainer, staggerTransition, smoothTransition } from '@/lib/animations'
 
 export default function HomeHero() {
   return (
     <Hero>
       <div className="grid lg:grid-cols-2 gap-12 items-start">
-        <motion.div initial="hidden" animate="visible" variants={fadeInUp}>
+        <motion.div 
+          initial="hidden" 
+          animate="visible" 
+          variants={fadeInUp}
+          transition={smoothTransition}
+        >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Professional
             <span className="gradient-text block">Production Comms</span>
@@ -28,7 +33,7 @@ export default function HomeHero() {
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            transition={{ ...staggerTransition, delayChildren: 0.3 }}
+            transition={staggerTransition}
           >
             {[
               "Broadcast-grade Motorola equipment",
@@ -71,6 +76,7 @@ export default function HomeHero() {
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
+          transition={smoothTransition}
         >
           <div className="relative">
             <div className="aspect-[4/3] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center shadow-soft-lg transition-transform duration-300 hover:scale-[1.02]">

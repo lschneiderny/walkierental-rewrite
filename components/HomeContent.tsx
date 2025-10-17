@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import { motion } from "motion/react"
 import { Truck, Shield, Clock, Phone } from 'lucide-react'
-import { fadeInUp, staggerContainer, scaleIn, scrollViewport, staggerTransition } from '@/lib/animations'
+import { fadeInUp, staggerContainer, scaleIn, scrollViewport, staggerTransition, smoothTransition } from '@/lib/animations'
 
-export default function HomeContent() {
+export default function HomeContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* How it Works Section */}
@@ -16,6 +16,7 @@ export default function HomeContent() {
           whileInView="visible"
           viewport={scrollViewport}
           variants={fadeInUp}
+          transition={smoothTransition}
         >
           <h2 className="text-3xl font-bold mb-4">How it works</h2>
           <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
@@ -30,6 +31,7 @@ export default function HomeContent() {
           viewport={scrollViewport}
           variants={staggerContainer}
           transition={staggerTransition}
+          layout
         >
           {[
             {
@@ -73,6 +75,10 @@ export default function HomeContent() {
           ))}
         </motion.div>
       </section>
+      
+      <section className="py-3 border-t border-gray-200">
+      {children}
+      </section>
 
       {/* Features Section */}
       <section className="py-16 border-t border-gray-200">
@@ -82,6 +88,7 @@ export default function HomeContent() {
           whileInView="visible"
           viewport={scrollViewport}
           variants={fadeInUp}
+          transition={smoothTransition}
         >
           Why Production Teams Trust Us
         </motion.h2>
@@ -144,6 +151,7 @@ export default function HomeContent() {
           whileInView="visible"
           viewport={scrollViewport}
           variants={scaleIn}
+          transition={smoothTransition}
         >
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">

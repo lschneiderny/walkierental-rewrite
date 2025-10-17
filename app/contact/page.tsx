@@ -1,24 +1,32 @@
-'use client'
+"use client";
 
-import { Phone, Mail, Send, ArrowRight } from 'lucide-react'
-import { motion } from "motion/react"
-import { fadeInUp, staggerContainer, scaleIn, slideInRight, scrollViewport, staggerTransition } from '@/lib/animations'
-import { useState } from 'react'
-import StickyBanner from '@/components/StickyBanner'
-import Hero from '@/components/Hero'
+import { Phone, Mail, Send, ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
+import {
+  fadeInUp,
+  staggerContainer,
+  scaleIn,
+  slideInRight,
+  scrollViewport,
+  staggerTransition,
+  smoothTransition,
+} from "@/lib/animations";
+import { useState } from "react";
+import StickyBanner from "@/components/StickyBanner";
+import Hero from "@/components/Hero";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  })
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
-  }
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+  };
 
   return (
     <div>
@@ -34,16 +42,20 @@ export default function ContactPage() {
       />
 
       <Hero>
-        <div className="text-center justify-center">
-          <div className="mt-8 ">
+        <motion.div
+          className="text-center mt-8 mb-6"
+          initial="hidden"
+          animate="visible"
+          variants={scaleIn}
+          transition={smoothTransition}
+        >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Contact Us
           </h1>
-          <p className="mt-4 text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Get in touch with us for any questions or inquiries.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+            contact us for any questions or inquiries.
           </p>
-        </div>
-        </div>
+        </motion.div>
       </Hero>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,6 +70,7 @@ export default function ContactPage() {
               viewport={scrollViewport}
               variants={staggerContainer}
               transition={staggerTransition}
+              layout
             >
               {/* Phone Card */}
               <motion.a
@@ -103,7 +116,7 @@ export default function ContactPage() {
 
               {/* Stats Card */}
               <motion.div
-                className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-6 shadow-soft"
+                className="bg-white/20 rounded-2xl shadow-soft-lg border border-gray-100 p-6"
                 variants={scaleIn}
               >
                 <div className="space-y-4">
@@ -129,6 +142,7 @@ export default function ContactPage() {
               whileInView="visible"
               viewport={scrollViewport}
               variants={slideInRight}
+              transition={smoothTransition}
             >
               <div className="bg-white rounded-2xl shadow-soft-lg p-8 border border-gray-100">
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -240,6 +254,7 @@ export default function ContactPage() {
             whileInView="visible"
             viewport={scrollViewport}
             variants={fadeInUp}
+            transition={smoothTransition}
           >
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">
@@ -259,6 +274,7 @@ export default function ContactPage() {
             viewport={scrollViewport}
             variants={staggerContainer}
             transition={staggerTransition}
+            layout
           >
             {[
               {
@@ -307,6 +323,7 @@ export default function ContactPage() {
             whileInView="visible"
             viewport={scrollViewport}
             variants={scaleIn}
+            transition={smoothTransition}
           >
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">

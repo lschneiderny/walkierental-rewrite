@@ -5,7 +5,7 @@ import { motion } from "motion/react"
 import { ArrowRight, ShoppingCart } from 'lucide-react'
 import { WalkiePackage } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'
-import { fadeInUp, staggerContainer, staggerTransition, scrollViewport } from '@/lib/animations'
+import { fadeInUp, staggerContainer, staggerTransition, scrollViewport, smoothTransition } from '@/lib/animations'
 
 interface PackageListProps {
   packages: WalkiePackage[]
@@ -22,6 +22,7 @@ export default function PackageList({ packages }: PackageListProps) {
         whileInView="visible"
         viewport={scrollViewport}
         variants={fadeInUp}
+        transition={smoothTransition}
       >
         <h2 className="text-3xl font-bold text-center">
           Production Packages
@@ -42,6 +43,7 @@ export default function PackageList({ packages }: PackageListProps) {
         viewport={scrollViewport}
         variants={staggerContainer}
         transition={staggerTransition}
+        layout
       >
         {packages.slice(0, 3).map((pkg) => (
           <motion.div

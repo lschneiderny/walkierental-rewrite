@@ -1,12 +1,11 @@
 "use client"
 
-import Link from 'next/link'
-import { Radio, Battery, Users, ShoppingCart, Headphones, Check } from 'lucide-react'
+import { Radio, Battery, ShoppingCart, Headphones, Check } from 'lucide-react'
 import { motion } from "motion/react"
 import { useEffect, useState, useMemo } from 'react'
 import { WalkiePackage } from '@/lib/types'
 import { useQuote } from '@/contexts/QuoteContext'
-import { scaleIn, scrollViewport } from '@/lib/animations'
+import { scaleIn, smoothTransition } from '@/lib/animations'
 import Hero from '@/components/Hero'
 
 export default function PackagesPage() {
@@ -87,15 +86,16 @@ export default function PackagesPage() {
 
       <Hero>
         <motion.div
-          className="text-center"
+          className="text-center mt-8 -mb-1"
           initial="hidden"
           animate="visible"
           variants={scaleIn}
+          transition={smoothTransition}
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             Production Communication Packages
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
             Complete walkie talkie rental packages for film, TV, and live events. Each walkie
             includes 2 batteries and 1 headset. Customize your headset types in the quote.
           </p>
@@ -157,7 +157,7 @@ export default function PackagesPage() {
                     className="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-primary hover:shadow-xl transition-all duration-300"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={smoothTransition}
                   >
 
                     {/* Package Content */}

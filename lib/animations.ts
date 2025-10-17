@@ -1,17 +1,19 @@
 // Shared animation configurations for consistent effects across all pages
 // Optimized for performance with smooth, polished animations
 
-// Fade and slide up - primary animation
+// ============================================================================
+// MOTION VARIANTS - Reusable animation definitions
+// ============================================================================
+
+// Fade and slide up - primary animation for content
 export const fadeInUp = {
   hidden: { 
     opacity: 0, 
-    y: 30,
-    scale: 0.95
+    y: 30
   },
   visible: { 
     opacity: 1, 
-    y: 0,
-    scale: 1
+    y: 0
   }
 }
 
@@ -39,9 +41,9 @@ export const slideInRight = {
   }
 }
 
-// Scale up with fade
+// Scale up with fade - for cards and emphasis elements
 export const scaleIn = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.9 },
   visible: { 
     opacity: 1, 
     scale: 1
@@ -56,7 +58,7 @@ export const staggerContainer = {
   }
 }
 
-// Stagger container - fast
+// Stagger container - fast for quicker animations
 export const staggerContainerFast = {
   hidden: { opacity: 0 },
   visible: {
@@ -64,49 +66,86 @@ export const staggerContainerFast = {
   }
 }
 
-// Stagger transition configurations
-export const staggerTransition = {
-  staggerChildren: 0.1,
-  delayChildren: 0.1
+// ============================================================================
+// TRANSITION CONFIGS - Timing and easing for all animations
+// ============================================================================
+
+// Standard smooth transition - primary choice
+export const smoothTransition = {
+  duration: 0.5
 }
 
-export const staggerTransitionFast = {
-  staggerChildren: 0.05,
-  delayChildren: 0
+// Fast transition - for interactive elements
+export const fastTransition = {
+  duration: 0.3
 }
 
-// Viewport configurations for scroll animations
-export const scrollViewport = {
-  once: true,
-  amount: 0.2, // Trigger when 20% of element is visible
-  margin: "0px 0px -50px 0px" // Bottom margin for earlier triggering
-}
-
-export const scrollViewportFast = {
-  once: true,
-  amount: 0.1,
-  margin: "0px 0px -100px 0px"
-}
-
-// Legacy viewport for compatibility
-export const standardViewport = scrollViewport
-
-// Transition presets
+// Spring transition - for playful moments
 export const springTransition = {
-  type: "spring",
+  type: "spring" as const,
   stiffness: 100,
   damping: 15,
   mass: 0.8
 }
 
-export const smoothTransition = {
-  duration: 0.6,
-  ease: [0.22, 1, 0.36, 1]
+// Slow transition - for emphasis
+export const slowTransition = {
+  duration: 0.8
 }
 
-export const fastTransition = {
-  duration: 0.4,
-  ease: [0.22, 1, 0.36, 1]
-}
-
+// Standard is smooth
 export const standardTransition = smoothTransition
+
+// ============================================================================
+// STAGGER CONFIGS - For sequencing multiple animations
+// ============================================================================
+
+// Standard stagger for lists and grids
+export const staggerTransition = {
+  staggerChildren: 0.08,
+  delayChildren: 0,
+  ...smoothTransition
+}
+
+// Fast stagger for quicker sequences
+export const staggerTransitionFast = {
+  staggerChildren: 0.04,
+  delayChildren: 0,
+  ...fastTransition
+}
+
+// Slow stagger for emphasis
+export const staggerTransitionSlow = {
+  staggerChildren: 0.12,
+  delayChildren: 0,
+  ...slowTransition
+}
+
+// ============================================================================
+// VIEWPORT CONFIGS - For scroll-triggered animations
+// ============================================================================
+
+// Standard viewport - triggers when 20% is visible
+export const scrollViewport = {
+  once: true,
+  amount: 0.2,
+  margin: "0px 0px -50px 0px"
+}
+
+// Eager viewport - triggers earlier
+export const scrollViewportEager = {
+  once: true,
+  amount: 0.1,
+  margin: "0px 0px -100px 0px"
+}
+
+// Strict viewport - waits for more to be visible
+export const scrollViewportStrict = {
+  once: true,
+  amount: 0.3,
+  margin: "0px 0px 0px 0px"
+}
+
+// Legacy viewport for compatibility
+export const standardViewport = scrollViewport
+export const scrollViewportFast = scrollViewportEager
